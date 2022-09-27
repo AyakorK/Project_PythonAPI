@@ -1,0 +1,508 @@
+{
+    "users": [{
+            "email": "admin@admin.fr",
+            "password": "admin",
+            "admin": 1,
+            "token": "1ffe938r217m5p9lk1sl2",
+            "money": 97705,
+            "id": 1
+        },
+        {
+            "email": "exemple@exemple.fr",
+            "password": "exemple",
+            "admin": 0,
+            "token": "l4z8pd9ufjw2tsttq7o4j",
+            "money": 309,
+            "id": 2
+        },
+        {
+            "email": "irjkf3@typery.com",
+            "password": "irjkf3",
+            "admin": 0,
+            "token": "1fme938p217m5pklk1jl2",
+            "money": 100,
+            "id": 5
+        },
+        {
+            "email": "maximka82@hypoordip.live",
+            "password": "maximka82",
+            "admin": 1,
+            "token": "1ffe938r21735p9lk1sl2",
+            "money": 100,
+            "id": 6
+        },
+        {
+            "email": "gordeach@robothorcrux.com",
+            "password": "gordeach",
+            "admin": 0,
+            "token": "1dfe938r217m5op3k1sl2",
+            "money": 100,
+            "id": 7
+        },
+        {
+            "email": "lennyslachina@yt-google.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "dg2hqjbtrij69k9ka9muq",
+            "id": 8
+        },
+        {
+            "email": "symbian1991@uhpanel.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "59rktyuuy6eb99x6de83qt",
+            "id": 9
+        },
+        {
+            "email": "riabko@badutquinza.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "i31j52qonlfovh7zdvbhfn",
+            "id": 10
+        },
+        {
+            "email": "michaelchase@internetaa317.xyz",
+            "password": "admin123",
+            "money": 100,
+            "token": "rli6lrofjmoo98pn250j",
+            "id": 11
+        },
+        {
+            "email": "canyon8@dmxs8.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "b0o3hup5vs7qm96pw0f8r",
+            "id": 12
+        },
+        {
+            "email": "hsis69hx@emvil.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "gknovtya9qhggzul0vdabh",
+            "id": 13
+        },
+        {
+            "email": "09360936@kimsangung.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "dwge5oqprzh06imzax7s0sd",
+            "id": 14
+        },
+        {
+            "email": "sailornu@ezybarber.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "wv2a733mq3x1qhnaiy6b8",
+            "id": 15
+        },
+        {
+            "email": "rasimasm@uhpanel.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "0xdnhl1tzx4eqx601f699f",
+            "id": 16
+        },
+        {
+            "email": "giausmariuas@goblinhammer.com",
+            "password": "admin123",
+            "money": 100,
+            "token": "8h4pccuse3nzypnc1da4",
+            "id": 17
+        },
+        {
+            "email": "User1@User1.fr",
+            "password": "User1User1",
+            "money": 100,
+            "token": "hkovov11mch0zud6khm7o5d",
+            "id": 18
+        },
+        {
+            "email": "user@user.fr",
+            "password": "Username1",
+            "token": "744pfrdbpz8bpdx5p5nos8",
+            "money": 93,
+            "id": 19
+        }
+    ],
+    "categories": [{
+            "id": 1,
+            "title": "Fruits & Vegetables"
+        },
+        {
+            "id": 2,
+            "title": "Furnitures"
+        },
+        {
+            "id": 3,
+            "title": "Electronics"
+        },
+        {
+            "id": 4,
+            "title": "test"
+        },
+        {
+            "id": 5,
+            "title": "demo"
+        }
+    ],
+    "products": [{
+            "name": "Pomme",
+            "quantity": 998,
+            "price": 1,
+            "id": 1
+        },
+        {
+            "id": 2,
+            "name": "Poire",
+            "price": 1,
+            "quantity": 1000,
+            "category": 1
+        },
+        {
+            "name": "Banane",
+            "price": 1,
+            "quantity": 1003,
+            "category": 1,
+            "id": 3
+        },
+        {
+            "id": 4,
+            "name": "Orange",
+            "price": 1,
+            "quantity": 1000,
+            "category": 1
+        },
+        {
+            "name": "Fraise",
+            "price": 1,
+            "quantity": 1006,
+            "id": 5
+        },
+        {
+            "id": 6,
+            "name": "Pêche",
+            "price": 1,
+            "quantity": 1000,
+            "category": 1
+        },
+        {
+            "id": 7,
+            "name": "Mangue",
+            "price": 1,
+            "quantity": 1000,
+            "category": 1
+        },
+        {
+            "name": "Kiwi",
+            "price": 1,
+            "quantity": 1003,
+            "id": 8
+        },
+        {
+            "name": "Ananas",
+            "price": 1,
+            "quantity": 1002,
+            "category": 1,
+            "id": 9
+        },
+        {
+            "name": "Cerise",
+            "price": 1,
+            "quantity": 1019,
+            "id": 10
+        },
+        {
+            "id": 11,
+            "name": "Framboise",
+            "price": 1,
+            "quantity": 1000,
+            "category": 1
+        },
+        {
+            "id": 12,
+            "name": "Mûre",
+            "price": 1,
+            "quantity": 1000,
+            "category": 1
+        },
+        {
+            "id": 13,
+            "name": "Myrtille",
+            "price": 1,
+            "quantity": 1000,
+            "category": 1
+        },
+        {
+            "name": "Cassis",
+            "price": 1,
+            "quantity": 1001,
+            "category": 1,
+            "id": 14
+        },
+        {
+            "id": 15,
+            "name": "Groseille",
+            "price": 1,
+            "quantity": 1000,
+            "category": 1
+        },
+        {
+            "id": 16,
+            "name": "Table",
+            "price": 100,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 17,
+            "name": "Chaise",
+            "price": 50,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 18,
+            "name": "Lit",
+            "price": 200,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 19,
+            "name": "Canapé",
+            "price": 300,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "name": "Bureau",
+            "price": 150,
+            "quantity": 1001,
+            "category": 2,
+            "id": 20
+        },
+        {
+            "name": "Chaise de bureau",
+            "price": 50,
+            "quantity": 1001,
+            "category": 2,
+            "id": 21
+        },
+        {
+            "id": 22,
+            "name": "Meuble TV",
+            "price": 100,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 23,
+            "name": "Meuble de rangement",
+            "price": 100,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 24,
+            "name": "Meuble de cuisine",
+            "price": 100,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 25,
+            "name": "Meuble de salle de bain",
+            "price": 100,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 26,
+            "name": "Meuble de chambre",
+            "price": 100,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 27,
+            "name": "Meuble de salon",
+            "price": 100,
+            "quantity": 1000,
+            "category": 2
+        },
+        {
+            "id": 28,
+            "name": "Télévision",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 29,
+            "name": "Ordinateur",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 30,
+            "name": "Smartphone",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 31,
+            "name": "Tablette",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 32,
+            "name": "Console de jeux",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 33,
+            "name": "Casque audio",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 34,
+            "name": "Enceinte",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 35,
+            "name": "Lecteur MP3",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 36,
+            "name": "Lecteur DVD",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 37,
+            "name": "Lecteur Blu-Ray",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 38,
+            "name": "Lecteur CD",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "id": 39,
+            "name": "Lecteur VHS",
+            "price": 1000,
+            "quantity": 1000,
+            "category": 3
+        },
+        {
+            "name": "test",
+            "quantity": 1,
+            "category": "1",
+            "price": "12",
+            "id": 40
+        }
+    ],
+    "orders": [{
+            "user_id": 1,
+            "products": [{
+                    "id": 3,
+                    "name": "Banane",
+                    "price": 1,
+                    "quantity": 4
+                },
+                {
+                    "id": 9,
+                    "name": "Ananas",
+                    "price": 1,
+                    "quantity": 2
+                },
+                {
+                    "id": 14,
+                    "name": "Cassis",
+                    "price": 1,
+                    "quantity": 2
+                },
+                {
+                    "id": 1,
+                    "name": "Pomme",
+                    "price": 1,
+                    "quantity": 5
+                },
+                {
+                    "id": 20,
+                    "name": "Bureau",
+                    "price": 150,
+                    "quantity": 2
+                },
+                {
+                    "id": 21,
+                    "name": "Chaise de bureau",
+                    "price": 50,
+                    "quantity": 2
+                }
+            ],
+            "total_price": 413,
+            "id": 2
+        },
+        {
+            "user_id": 1,
+            "total_price": 2300,
+            "products": [{
+                    "id": 20,
+                    "name": "Bureau",
+                    "price": 150,
+                    "quantity": 2
+                },
+                {
+                    "id": 33,
+                    "name": "Casque audio",
+                    "price": 1000,
+                    "quantity": 2
+                }
+            ],
+            "id": 4
+        },
+        {
+            "user_id": 1,
+            "total_price": 9,
+            "products": [{
+                "id": 1,
+                "name": "Pomme",
+                "price": 1,
+                "quantity": 9
+            }],
+            "id": 5
+        },
+        {
+            "user_id": 4,
+            "total_price": 2,
+            "products": [{
+                "id": 1,
+                "name": "Pomme",
+                "price": 1,
+                "quantity": 2
+            }],
+            "id": 6
+        }
+    ]
+}
