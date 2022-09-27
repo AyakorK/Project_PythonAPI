@@ -1,9 +1,15 @@
 from fastapi import FastAPI
-from typing import List, Set, Tuple, Dict, Union
+#from typing import List, Set, Tuple, Dict, Union
 from typing import Optional
 
 app = FastAPI()
 
+
+class Item:
+    def __init__(self, name: str, price: float, is_offer: Optional[bool] = None):
+        self.name = name
+        self.price = price
+        self.is_offer = is_offer
 
 
 
@@ -36,9 +42,15 @@ def get_full_name(first_name: str, last_name: str, age: int):
     return name_age
 print(get_full_name("john", "doe", 30))
 
-def process_items(items: List[str], items_t: Tuple[int, int, str], items_s: Set[bytes], items_d: Dict[str, str], item_u: Union[int, str]):
-    return {"items": items, "items_t": items_t, "items_s": items_s, "items_d": items_d, "item_u": item_u}
-print(process_items(["a", "b", "c"], (1, 2, "3"), {b"1", b"2", b"3"}, {"a": "b", "c": "d"}, 1))
+def describe_item(item: Item):
+    return {"item_name": item.name, "item_price": item.price, "item_offer": item.is_offer}
+print(describe_item(Item(name="Foo", price=50.2)))
+
+
+# def process_items(items: List[str], items_t: Tuple[int, int, str], items_s: Set[bytes], items_d: Dict[str, str], item_u: Union[int, str]):
+#     return {"items": items, "items_t": items_t, "items_s": items_s, "items_d": items_d, "item_u": item_u}
+# print(process_items(["a", "b", "c"], (1, 2, "3"), {b"1", b"2", b"3"}, {"a": "b", "c": "d"}, 1))
+
 
 
 
