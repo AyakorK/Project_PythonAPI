@@ -44,6 +44,14 @@ async def get_user_orders(user_id: int):
             return order
     return {"error": "This user has no active orders"}
 
+@app.delete("/users/{user_id}")
+async def delete_user(user_id: int):
+    for user in data["users"]:
+        if user["id"] == user_id:
+            data["users"].remove(user)
+            return {"message": "User deleted"}
+    return {"error": "User not found"}
+
 @app.get("/categories")
 async def get_allCategories():
     if data["categories"]:
