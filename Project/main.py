@@ -22,6 +22,16 @@ async def get_user(user_id: int):
             return user
     return {"error": "User not found"}
 
+@app.get("/users/{user_id}/orders")
+async def get_user_orders(user_id: int):
+    # If the user does not exist
+    if not any(user["id"] == user_id for user in data["users"]):
+        return {"error": "User not found"}
+    for order in data["orders"]:
+        if order["user_id"] == user_id:
+            return order
+    return {"error": "This user has no active orders"}
+
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
