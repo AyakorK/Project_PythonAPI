@@ -1,13 +1,11 @@
 from fastapi import FastAPI
-import json
 
 app = FastAPI()
 
-data = json.load(open("Project/db.json"))
 
 @app.get("/")
 async def root():
-    return data
+    return {"message": "Hello World"}
 
 
 @app.get("/hello/{name}")
