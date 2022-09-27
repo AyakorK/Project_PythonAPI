@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from typing import List, Set, Tuple, Dict, Union
-
+from typing import Optional
 
 app = FastAPI()
 
@@ -16,6 +16,18 @@ async def root():
 @app.get("/hello/{name}")
 async def say_hello(name: str, q: str = None):
     return {"message": f"Hello {name} - {q}"}
+
+
+# Get an optional url saying hi
+@app.get("/hi")
+async def say_hi(name: Optional[str] = None, q: Optional[str] = None):
+    if name is not None and q is not None:
+        return(f"Hey {name}! You just said -'{q}'")
+    elif name is not None:
+        return(f"Hey {name}! You didn't say anything!")
+    else:
+        return("Hello World")
+
 
 @app.get("/hello/{first_name}/{last_name}/{age}")
 def get_full_name(first_name: str, last_name: str, age: int):
