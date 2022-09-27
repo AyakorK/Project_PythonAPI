@@ -118,8 +118,18 @@ async def get_model(model_name: Cars):
         return {"model_name": model_name, "message": "Audi will be there on 2024"}
     return {"model_name": model_name, "message": "This car is not in F1"}
 
+@app.post("/create_item/")
+async def create_item(item: Item):
+    item.id = len(fake_items_db) + 1
+    item.name = item.name.title()
+    item.price = item.price + (10/100)*item.price
+    fake_items_db.append(item.dict())
+    return item
 
-    return {"model_name": model_name, "message": "Have some residuals"}
+@app.put("/database/{item_id}")
+async def create_item(item_id: int, item: Item):
+    return {"id": item_id, **item.dict()}
+
 
 # def process_items(items: List[str], items_t: Tuple[int, int, str], items_s: Set[bytes], items_d: Dict[str, int], item_u: Union[int, str]):
 #     return {"items": items, "items_t": items_t, "items_s": items_s, "items_d": items_d, "item_u": item_u}
