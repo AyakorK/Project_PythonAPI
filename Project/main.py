@@ -6,6 +6,8 @@ from enum import Enum
 
 app = FastAPI()
 
+fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}, {"item_name": "Qux"}, {"item_name": "Quux"}, {"item_name": "Corge"}, {"item_name": "Grault"}, {"item_name": "Garply"}, {"item_name": "Waldo"}, {"item_name": "Fred"}, {"item_name": "Plugh"}, {"item_name": "Xyzzy"}, {"item_name": "Thud"}]
+
 
 class Item(BaseModel):
         id: int
@@ -87,6 +89,10 @@ def get_user_items(user_id: int):
         return user.items
     return user.items
 
+@app.get("/database/")
+async def read_item(skip: int = 0, limit: int = 10):
+    return fake_items_db[skip : skip + limit]
+
 @app.get("/models/{model_name}")
 async def get_model(model_name: Cars):
     if model_name is Cars.Mercedes:
@@ -97,7 +103,7 @@ async def get_model(model_name: Cars):
         return {"model_name": model_name, "message": "Redbull is the best drink but not a car"}
     elif model_name.value == "Audi":
         return {"model_name": model_name, "message": "Audi will be there on 2024"}
-    return {"model_name": model_name, "message": "Have a nice day"}
+    return {"model_name": model_name, "message": "This car is not in F1"}
 
 
     return {"model_name": model_name, "message": "Have some residuals"}
