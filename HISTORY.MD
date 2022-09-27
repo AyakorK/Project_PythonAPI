@@ -1,7 +1,4 @@
 # HISTORY
 
-1 - Creation of the architecture of our git repository
-<br>
+1 - Creation of the architecture of our git
 2 - Setup of PythonAPI
-<br>
-3 - Adding DB to our project
