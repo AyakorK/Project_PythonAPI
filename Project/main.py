@@ -6,7 +6,7 @@ from enum import Enum
 
 app = FastAPI()
 
-fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}, {"item_name": "Qux"}, {"item_name": "Quux"}, {"item_name": "Corge"}, {"item_name": "Grault"}, {"item_name": "Garply"}, {"item_name": "Waldo"}, {"item_name": "Fred"}, {"item_name": "Plugh"}, {"item_name": "Xyzzy"}, {"item_name": "Thud"}]
+fake_items_db = [{"id": 1, "item_name": "Foo"}, {"id": 2, "item_name": "Bar"}, {"id": 3, "item_name": "Baz"}, {"id": 4, "item_name": "Qux"}, {"id": 5, "item_name": "Quux"}, {"id": 6, "item_name": "Corge"}, {"id": 7, "item_name": "Grault"}, {"id": 8, "item_name": "Garply"}, {"id": 9, "item_name": "Waldo"}, {"id": 10, "item_name": "Fred"}, {"id": 11, "item_name": "Plugh"}, {"id": 12, "item_name": "Xyzzy"}, {"id": 13, "item_name": "Thud"}]
 
 
 class Item(BaseModel):
@@ -92,6 +92,19 @@ def get_user_items(user_id: int):
 @app.get("/database/")
 async def read_item(skip: int = 0, limit: int = 10):
     return fake_items_db[skip : skip + limit]
+
+
+@app.get("/database/{item_id}")
+async def read_item(item_id: str, q: Union[str, None] = None, short: bool = False):
+    item = {"item_id": item_id}
+    if q:
+        item.update({"q": q})
+    if not short:
+        item.update(
+            {"description": "This is an amazing item that has a long description"}
+        )
+    return item
+
 
 @app.get("/models/{model_name}")
 async def get_model(model_name: Cars):
