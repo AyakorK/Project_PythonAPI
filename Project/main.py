@@ -1,4 +1,8 @@
 from fastapi import FastAPI
+from typing import Optional
+from datetime import datetime
+from pydantic import BaseModel
+
 
 app = FastAPI()
 
@@ -11,3 +15,54 @@ async def root():
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
+
+def get_full_name(first_name:str,last_name:str):
+    full_name = first_name.title() + " " + last_name.title()
+    return full_name
+def get_name_with_age(name:str,age:int):
+    name_with_age = name + " is this old " + str(age)
+    return name_with_age
+def process_items1(items : list[str]):
+    for item in items:
+        print(item)
+def process_items2(items_t : tuple[int,int,str], item_s : set[bytes]):
+    return items_t, item_s
+def process_items3(prices : dict[str,float]):
+    for item_name, item_price in prices.items():
+        print(item_name)
+        print(item_price)
+def process_items4(item : int | str):
+    print(item)
+def say_hi1(name: Optional[str]=None):
+    if name is not None :
+        print(f"Hey {name}!")
+    else :
+        print("Hello world!")
+def say_hi2(name: str | None) :
+    if name is not None :
+        print(f"Hey {name}!")
+    else :
+        print("Hello world")
+class Person :
+    def __init__(self,name: str):
+        self.name=name
+def get_person_name(one_person: Person):
+    return one_person.name
+
+thomas = Person("Thomas")
+
+class User(BaseModel):
+    id:int
+    name= "Jane Doe"
+    signup_ts: datetime|None
+    friends: list[int] = []
+
+external_data ={
+    "id":"123",
+    "signup_ts": "2017-06-01 12:22",
+    "friends": [1,"2",b"3"],
+}
+user = User(**external_data)
+
+print(user)
+print(user.id)
