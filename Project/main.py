@@ -20,7 +20,6 @@ Definition of every classes used in the API
 class User(BaseModel):
     password: str
     email: str
-    # Set an ID, that will be null until the user is created
     id: int = None
     token: str = None
     money: int = None
@@ -95,6 +94,16 @@ All functions that will concern the orders:
 - Delete an order
 """
 
+@app.get("/orders")
+async def get_order():
+    return data["orders"]
+
+@app.get("/orders/{order_id}")
+async def get_order_by_id(order_id: int):
+    for order in data["orders"] :
+        if order["id"] == order_id :
+            return order
+
 
 """
 All functions that will concern the categories:
@@ -117,3 +126,4 @@ async def get_categories(category_id: int):
         if category["id"] == category_id:
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
+
