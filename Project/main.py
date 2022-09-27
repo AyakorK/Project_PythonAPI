@@ -26,4 +26,4 @@ async def get_categories(category_id: int):
     for category in data["categories"]:
         if category["id"] == category_id:
             return category
-    return {"error": "ID not found"}
+    return {"error": str(category_id) + " isn't a valid category id"}
