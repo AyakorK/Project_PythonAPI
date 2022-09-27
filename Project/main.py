@@ -10,6 +10,17 @@ data = json.load(open("Project/db.json"))
 async def root():
     return data
 
+
+@app.get("/orders")
+async def get_order():
+    return data["orders"]
+
+@app.get("/orders/{order_id}")
+async def get_order_by_id(order_id: int):
+    for order in data["orders"] :
+        if order["id"] == order_id :
+            return order
+
 @app.get("/users")
 async def get_users():
     if data["users"]:
@@ -46,3 +57,4 @@ async def get_categories(category_id: int):
         if category["id"] == category_id:
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
+
