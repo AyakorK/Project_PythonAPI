@@ -33,14 +33,11 @@ async def get_user_orders(user_id: int):
             return order
     return {"error": "This user has no active orders"}
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
-
 @app.get("/categories")
 async def get_allCategories():
-    return data["categories"]
+    if data["categories"]:
+        return data["categories"]
+    return {"message": "No categories found"}
 
 
 @app.get("/categories/{category_id}")
