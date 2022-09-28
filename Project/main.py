@@ -128,12 +128,14 @@ All functions that will concern the categories:
 - Delete a category
 """
 
+# List all categories
 @app.get("/categories")
 async def get_allCategories():
     if data["categories"]:
         return data["categories"]
     return {"message": "No categories found"}
 
+# Get details from a category (by ID)
 @app.get("/categories/{category_id}")
 async def get_categories(category_id: int):
     for category in data["categories"]:
@@ -141,6 +143,7 @@ async def get_categories(category_id: int):
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
 
+# Create a category
 @app.post("/categories")
 async def post_categories(item: categoriesItem):
     item.id = data["categories"][-1]["id"] + 1
