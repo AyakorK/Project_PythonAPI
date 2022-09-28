@@ -4,10 +4,8 @@ from pydantic import BaseModel
 import random
 import string
 
-
 app = FastAPI()
 data = json.load(open("Project/db.json"))
-
 
 """
 Definition of every classes used in the API
@@ -18,6 +16,7 @@ Definition of every classes used in the API
 - Categories
 """
 
+
 class User(BaseModel):
     password: str
     email: str
@@ -25,23 +24,35 @@ class User(BaseModel):
     token: str = None
     money: int = None
     admin: int = None
+
+
 class categoriesItem(BaseModel):
     id: int = None
     title: str
+
+
 class Edited_user(BaseModel):
     password: str = None
     email: str = None
 
+
+class Edited_product(BaseModel):
+    name: str = None
+    price: int = None
+    quantity: int = None
+    category: int = None
+
+
 class Order(BaseModel):
     user_id: int
     total_price: int
-    id:int
+    id: int
     products: list
+
 
 @app.get("/")
 async def root():
     return data
-
 
 
 """
@@ -61,12 +72,14 @@ async def get_users():
         return data["users"]
     return {"message": "No users found"}
 
+
 @app.get("/users/{user_id}")
 async def get_user(user_id: int):
     for user in data["users"]:
         if user["id"] == user_id:
             return user
     return {"error": "User not found"}
+
 
 @app.post("/users")
 async def create_user(new_user: User):
@@ -79,6 +92,7 @@ async def create_user(new_user: User):
     data["users"].append(new_user.dict())
     return data["users"]
 
+
 @app.put("/users/{user_id}")
 async def update_user(user_id: int, edited_user: Edited_user):
     if any(user["email"] == edited_user.email for user in data["users"]):
@@ -90,6 +104,7 @@ async def update_user(user_id: int, edited_user: Edited_user):
             return data["users"]
     return {"error": "User not found"}
 
+
 @app.get("/users/{user_id}/orders")
 async def get_user_orders(user_id: int):
     # If the user does not exist
@@ -99,6 +114,7 @@ async def get_user_orders(user_id: int):
         if order["user_id"] == user_id:
             return order
     return {"error": "This user has no active orders"}
+
 
 @app.get("/users/{user_id}/orders/{order_id}")
 async def get_user_order(user_id: int, order_id: int):
@@ -112,6 +128,7 @@ async def get_user_order(user_id: int, order_id: int):
         if order["user_id"] == user_id and order["id"] == order_id:
             return order
     return {"error": "This order does not belong to this user"}
+
 
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int):
@@ -131,16 +148,30 @@ All functions that will concern the products:
 - Delete a product
 """
 
+
 @app.get("/products")
 async def root():
     if data["products"]:
         return data["products"]
     return {"message": "No products found"}
 
+
 @app.get("/products/{products_id}")
-async def get_products_by_id(products_id:int):
+async def get_products_by_id(products_id: int):
     for products in data["products"]:
         if products["id"] == products_id:
+            return products
+    return {"error": "Product not found"}
+
+
+@app.put("/products/{products_id}")
+async def update_products(products_id: int, edited_products: Edited_product):
+    for products in data["products"]:
+        if products["id"] == products_id:
+            products["name"] = edited_products.name or products["name"]
+            products["price"] = edited_products.price or products["price"]
+            products["quantity"] = edited_products.quantity or products["quantity"]
+            products["category"] = edited_products.category or products["category"]
             return products
     return {"error": "Product not found"}
 
@@ -154,19 +185,24 @@ All functions that will concern the orders:
 - Delete an order
 """
 
+
 @app.get("/orders")
 async def get_order():
     return data["orders"]
 
+
 @app.get("/orders/{order_id}")
 async def get_order_by_id(order_id: int):
-    for order in data["orders"] :
-        if order["id"] == order_id :
+    for order in data["orders"]:
+        if order["id"] == order_id:
             return order
+
+
 @app.post("/orders")
-async def create_order(new_order : Order):
+async def create_order(new_order: Order):
     data["orders"].append(new_order)
     return data["orders"]
+
 
 """
 All functions that will concern the categories:
@@ -177,11 +213,13 @@ All functions that will concern the categories:
 - Delete a category
 """
 
+
 @app.get("/categories")
 async def get_allCategories():
     if data["categories"]:
         return data["categories"]
     return {"message": "No categories found"}
+
 
 @app.get("/categories/{category_id}")
 async def get_categories(category_id: int):
@@ -190,6 +228,7 @@ async def get_categories(category_id: int):
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
 
+
 @app.post("/categories")
 async def post_categories(item: categoriesItem):
     item.id = data["categories"][-1]["id"] + 1
@@ -197,6 +236,7 @@ async def post_categories(item: categoriesItem):
         return {"error": "Category already exists"}
     data["categories"].append(item.dict())
     return data["categories"]
+
 
 @app.delete("/categories/{category_id}")
 async def delete_categories(category_id: int):
