@@ -7,6 +7,10 @@ import string
 app = FastAPI()
 data = json.load(open("Project/db.json"))
 
+def write_db():
+    with open("Project/db.json", "w") as f:
+        json.dump(data, f, indent=4, sort_keys=True, separators=(",", ": "))
+
 """
 Definition of every classes used in the API
 - User
@@ -46,7 +50,7 @@ class EditedProduct(BaseModel):
 class Order(BaseModel):
     user_id: int
     total_price: int
-    id: int
+    id: int = None
     products: list
 
 
@@ -71,13 +75,24 @@ All functions that will concern the user:
 
 
 @app.get("/users")
-async def get_users(token: str = None):
+async def get_users(token: str = None, sort: str = None):
     if token is not None:
         for user in data["users"]:
             if user["token"] == token:
                 return user
         return {"error": "Invalid token"}
 
+    if sort is not None:
+        if sort == "email":
+            return sorted(data["users"], key=lambda k: k["email"].lower())
+        elif sort == "money":
+            return sorted(data["users"], key=lambda k: k["money"])
+        elif sort == "email_desc":
+            return sorted(data["users"], key=lambda k: k["email"].lower(), reverse=True)
+        elif sort == "money_desc":
+            return sorted(data["users"], key=lambda k: k["money"], reverse=True)
+        else:
+            return {"error": "Invalid sort parameter"}
     return data["users"]
 @app.get("/users/{user_id}")
 async def get_user(user_id: int):
@@ -94,6 +109,7 @@ async def update_user(user_id: int, edited_user: EditedUser):
         if user["id"] == user_id:
             user["password"] = edited_user.password or user["password"]
             user["email"] = edited_user.email or user["email"]
+            write_db()
             return data["users"]
     return {"error": "User not found"}
 
@@ -118,6 +134,7 @@ async def create_user(new_user: User):
     if any(user["email"] == new_user.email for user in data["users"]):
         return {"error": "User already exists"}
     data["users"].append(new_user.dict())
+    write_db()
     return data["users"]
 
 
@@ -140,6 +157,7 @@ async def delete_user(user_id: int):
     for user in data["users"]:
         if user["id"] == user_id:
             data["users"].remove(user)
+            write_db()
             return {"message": "User deleted"}
     return {"error": "User not found"}
 
@@ -177,6 +195,7 @@ async def update_products(products_id: int, edited_products: EditedProduct):
             products["price"] = edited_products.price or products["price"]
             products["quantity"] = edited_products.quantity or products["quantity"]
             products["category"] = edited_products.category or products["category"]
+            write_db()
             return products
     return {"error": "Product not found"}
 
@@ -205,7 +224,9 @@ async def get_order_by_id(order_id: int):
 
 @app.post("/orders")
 async def create_order(new_order: Order):
+    new_order.id = data["orders"][-1]["id"] + 1
     data["orders"].append(new_order)
+    write_db()
     return data["orders"]
 
 
@@ -243,6 +264,7 @@ async def create_categories(item: CategoriesItem):
     if any(category["title"] == item.title for category in data["categories"]):
         return {"error": "Category already exists"}
     data["categories"].append(item.dict())
+    write_db()
     return data["categories"]
 
 
@@ -254,6 +276,7 @@ async def update_categories(category_id: int, item: EditCategory):
     for category in data["categories"]:
         if category["id"] == category_id:
             category["title"] = item.title or category["title"]
+            write_db()
             return category
     return {"error": "Category not found"}
 
@@ -264,5 +287,6 @@ async def delete_categories(category_id: int):
     for category in data["categories"]:
         if category["id"] == category_id:
             data["categories"].remove(category)
+            write_db()
             return {"message": "Category deleted"}
     return {"error": "Category not found"}
