@@ -14,3 +14,6 @@
 * Adding the modification of Users, Categories , Products and Order
 * Adding the deletion of Users , Categories , Products and Order
 * Reformating the Code to make it prettier
+* Permit to the user to sort the list of Users , Categories , Products and Order
+* Adding few more elements to the documentation
+* Modifying the database to erase some errors and add a system to update automatically the database
