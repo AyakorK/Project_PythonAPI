@@ -271,8 +271,20 @@ All functions that will concern the orders:
 
 
 @app.get("/orders")
-async def get_order():
-    return data["orders"]
+async def get_order(sort: str = None):
+    if sort is not None:
+        if sort == "user":
+            return sorted(data["orders"], key=lambda k: k["user_id"])
+        elif sort == "total":
+            return sorted(data["orders"], key=lambda k: k["total_price"])
+        elif sort == "user_desc":
+            return sorted(data["orders"], key=lambda k: k["user_id"], reverse=True)
+        elif sort == "total_desc":
+            return sorted(data["orders"], key=lambda k: k["total_price"], reverse=True)
+        raise HTTPException(status_code=400, detail="Error: Invalid sort parameter")
+    elif data["orders"]:
+        return data["orders"]
+    raise HTTPException(status_code=404, detail="Error: No orders found")
 
 
 @app.get("/orders/{order_id}")
