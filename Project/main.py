@@ -5,7 +5,6 @@ import random
 import string
 
 app = FastAPI()
-
 data = json.load(open("Project/db.json"))
 
 
@@ -28,6 +27,18 @@ class User(BaseModel):
 @app.get("/")
 async def root():
     return data
+
+@app.get("/{products}")
+async def root():
+    return data["products"]
+
+@app.get("/products/{products_id}")
+async def get_products_by_id(products_id:int):
+    for products in data["products"]:
+        if products["id"] == products_id:
+            return products
+        if not any(products["id"] == products_id for products in data["products"]):
+            return {"error": "Product not found"}
 
 
 """
