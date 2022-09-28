@@ -26,16 +26,17 @@ class User(BaseModel):
     admin: int = None
 
 
-class categories_item(BaseModel):
+class CategoriesItem(BaseModel):
     id: int = None
     title: str
-    
-class Edited_user(BaseModel):
+
+
+class EditedUser(BaseModel):
     password: str = None
     email: str = None
 
 
-class Edited_product(BaseModel):
+class EditedProduct(BaseModel):
     name: str = None
     price: int = None
     quantity: int = None
@@ -49,7 +50,7 @@ class Order(BaseModel):
     products: list
 
 
-class Edit_category(BaseModel):
+class EditCategory(BaseModel):
     title: str = None
 
 
@@ -70,12 +71,14 @@ All functions that will concern the user:
 
 
 @app.get("/users")
-async def get_users():
-    if data["users"]:
-        return data["users"]
-    return {"message": "No users found"}
+async def get_users(token: str = None):
+    if token is not None:
+        for user in data["users"]:
+            if user["token"] == token:
+                return user
+        return {"error": "Invalid token"}
 
-
+    return data["users"]
 @app.get("/users/{user_id}")
 async def get_user(user_id: int):
     for user in data["users"]:
@@ -83,21 +86,8 @@ async def get_user(user_id: int):
             return user
     return {"error": "User not found"}
 
-
-@app.post("/users")
-async def create_user(new_user: User):
-    new_user.id = data["users"][-1]["id"] + 1
-    new_user.token = "".join(random.choices(string.ascii_lowercase + string.digits, k=22))
-    new_user.admin = 0
-    new_user.money = 3000
-    if any(user["email"] == new_user.email for user in data["users"]):
-        return {"error": "User already exists"}
-    data["users"].append(new_user.dict())
-    return data["users"]
-
-
 @app.put("/users/{user_id}")
-async def update_user(user_id: int, edited_user: Edited_user):
+async def update_user(user_id: int, edited_user: EditedUser):
     if any(user["email"] == edited_user.email for user in data["users"]):
         return {"error": "Email already used"}
     for user in data["users"]:
@@ -129,7 +119,8 @@ async def create_user(new_user: User):
         return {"error": "User already exists"}
     data["users"].append(new_user.dict())
     return data["users"]
-    
+
+
 @app.get("/users/{user_id}/orders/{order_id}")
 async def get_user_order(user_id: int, order_id: int):
     # If the user does not exist
@@ -179,7 +170,7 @@ async def get_products_by_id(products_id: int):
 
 
 @app.put("/products/{products_id}")
-async def update_products(products_id: int, edited_products: Edited_product):
+async def update_products(products_id: int, edited_products: EditedProduct):
     for products in data["products"]:
         if products["id"] == products_id:
             products["name"] = edited_products.name or products["name"]
@@ -230,7 +221,7 @@ All functions that will concern the categories:
 
 # List all categories
 @app.get("/categories")
-async def get_allCategories():
+async def get_all_categories():
     if data["categories"]:
         return data["categories"]
     return {"message": "No categories found"}
@@ -245,12 +236,9 @@ async def get_categories(category_id: int):
     return {"error": str(category_id) + " isn't a valid category id"}
 
 
-
-
-
 # Create a category
 @app.post("/categories")
-async def create_categories(item: categories_item):
+async def create_categories(item: CategoriesItem):
     item.id = data["categories"][-1]["id"] + 1
     if any(category["title"] == item.title for category in data["categories"]):
         return {"error": "Category already exists"}
@@ -260,7 +248,7 @@ async def create_categories(item: categories_item):
 
 # Update a category
 @app.put("/categories/{category_id}")
-async def update_categories(category_id: int, item: Edit_category):
+async def update_categories(category_id: int, item: EditCategory):
     if any(category["title"] == item.title for category in data["categories"]):
         return {"error": "Category already exists"}
     for category in data["categories"]:
