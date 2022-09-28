@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import random
 import string
 
+
 app = FastAPI()
 data = json.load(open("Project/db.json"))
 
@@ -31,9 +32,17 @@ class Edited_user(BaseModel):
     password: str = None
     email: str = None
 
+class Order(BaseModel):
+    user_id: int
+    total_price: int
+    id:int
+    products: list
+
 @app.get("/")
 async def root():
     return data
+
+
 
 """
 All functions that will concern the user:
@@ -44,6 +53,7 @@ All functions that will concern the user:
 - Update a user
 - Delete a user
 """
+
 
 @app.get("/users")
 async def get_users():
@@ -140,7 +150,10 @@ async def get_order_by_id(order_id: int):
     for order in data["orders"] :
         if order["id"] == order_id :
             return order
-
+@app.post("/orders")
+async def create_order(new_order : Order):
+    data["orders"].append(new_order)
+    return data["orders"]
 
 """
 All functions that will concern the categories:
