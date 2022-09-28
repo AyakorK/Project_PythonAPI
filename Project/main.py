@@ -60,7 +60,6 @@ class Order(BaseModel):
 class Edited_Order(BaseModel):
     user_id: int = None
     total_price: int = None
-    id:int = None
     products: list = None
 
 
@@ -230,7 +229,7 @@ async def get_products_in_order(order_id: int):
     for order in data["orders"] :
         if order["id"] == order_id:
             return order["products"]
-
+    return {"error":"Order not found"}
 
 @app.post("/orders")
 async def create_order(new_order: Order):
