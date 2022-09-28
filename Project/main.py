@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 import json
+from pydantic import BaseModel
 
 app = FastAPI()
 
 data = json.load(open("Project/db.json"))
+
+class categoriesItem(BaseModel):
+    id: int
+    title: str
 
 
 @app.get("/")
@@ -49,3 +54,8 @@ async def get_categories(category_id: int):
         if category["id"] == category_id:
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
+
+@app.post("/categories")
+async def post_categories(item: categoriesItem):
+    data["categories"].append(item)
+    return data["categories"]
