@@ -24,9 +24,12 @@ class User(BaseModel):
     money: int = None
     admin: int = None
 
-class categoriesItem(BaseModel):
+class categories_item(BaseModel):
     id: int = None
     title: str
+
+class Edit_category(BaseModel):
+    title: str = None
 
 @app.get("/")
 async def root():
@@ -151,12 +154,22 @@ async def get_categories(category_id: int):
     return {"error": str(category_id) + " isn't a valid category id"}
 
 @app.post("/categories")
-async def post_categories(item: categoriesItem):
+async def create_categories(item: categories_item):
     item.id = data["categories"][-1]["id"] + 1
     if any(category["title"] == item.title for category in data["categories"]):
         return {"error": "Category already exists"}
     data["categories"].append(item.dict())
     return data["categories"]
+
+@app.put("/categories/{category_id}")
+async def update_categories(category_id: int, item: Edit_category):
+    if any(category["title"] == item.title for category in data["categories"]):
+        return {"error": "Category already exists"}
+    for category in data["categories"]:
+        if category["id"] == category_id:
+            category["title"] = item.title or category["title"]
+            return category
+    return {"error": "Category not found"}
 
 @app.delete("/categories/{category_id}")
 async def delete_categories(category_id: int):
