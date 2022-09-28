@@ -192,8 +192,26 @@ All functions that will concern the products:
 
 
 @app.get("/products")
-async def root():
-    if data["products"]:
+async def root(sort: str = None):
+    if sort is not None:
+        if sort == "name":
+            return sorted(data["products"], key=lambda k: k["name"].lower())
+        elif sort == "price":
+            return sorted(data["products"], key=lambda k: k["price"])
+        elif sort == "category":
+            return sorted(data["products"], key=lambda k: k["category"])
+        elif sort == "quantity":
+            return sorted(data["products"], key=lambda k: k["quantity"])
+        elif sort == "name_desc":
+            return sorted(data["products"], key=lambda k: k["name"].lower(), reverse=True)
+        elif sort == "price_desc":
+            return sorted(data["products"], key=lambda k: k["price"], reverse=True)
+        elif sort == "category_desc":
+            return sorted(data["products"], key=lambda k: k["category"], reverse=True)
+        elif sort == "quantity_desc":
+            return sorted(data["products"], key=lambda k: k["quantity"], reverse=True)
+        raise HTTPException(status_code=400, detail="Error: Invalid sort parameter")
+    elif data["products"]:
         return data["products"]
     raise HTTPException(status_code=404, detail="Error: No products found")
 
