@@ -171,3 +171,11 @@ async def post_categories(item: categoriesItem):
         return {"error": "Category already exists"}
     data["categories"].append(item.dict())
     return data["categories"]
+
+@app.delete("/categories/{category_id}")
+async def delete_categories(category_id: int):
+    for category in data["categories"]:
+        if category["id"] == category_id:
+            data["categories"].remove(category)
+            return {"message": "Category deleted"}
+    return {"error": "Category not found"}
