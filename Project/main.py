@@ -13,11 +13,14 @@ async def root():
 async def root():
     return data["products"]
 
-@app.get("/product/{products_id}")
+@app.get("/products/{products_id}")
 async def get_products_by_id(products_id:int):
     for products in data["products"]:
         if products["id"] == products_id:
             return products
+        if not any(products["id"] == products_id for products in data["products"]):
+            return {"error": "Product not found"}
+
 
 @app.get("/orders")
 async def get_order():
