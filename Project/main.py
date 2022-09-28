@@ -4,7 +4,6 @@ from pydantic import BaseModel
 import random
 import string
 
-
 app = FastAPI()
 data = json.load(open("Project/db.json"))
 
@@ -35,10 +34,18 @@ class Edited_user(BaseModel):
     password: str = None
     email: str = None
 
+
+class Edited_product(BaseModel):
+    name: str = None
+    price: int = None
+    quantity: int = None
+    category: int = None
+
+
 class Order(BaseModel):
     user_id: int
     total_price: int
-    id:int
+    id: int
     products: list
 
 
@@ -76,6 +83,7 @@ async def get_user(user_id: int):
             return user
     return {"error": "User not found"}
 
+
 @app.post("/users")
 async def create_user(new_user: User):
     new_user.id = data["users"][-1]["id"] + 1
@@ -87,6 +95,7 @@ async def create_user(new_user: User):
     data["users"].append(new_user.dict())
     return data["users"]
 
+
 @app.put("/users/{user_id}")
 async def update_user(user_id: int, edited_user: Edited_user):
     if any(user["email"] == edited_user.email for user in data["users"]):
@@ -97,6 +106,7 @@ async def update_user(user_id: int, edited_user: Edited_user):
             user["email"] = edited_user.email or user["email"]
             return data["users"]
     return {"error": "User not found"}
+
 
 @app.get("/users/{user_id}/orders")
 async def get_user_orders(user_id: int):
@@ -168,6 +178,18 @@ async def get_products_by_id(products_id: int):
     return {"error": "Product not found"}
 
 
+@app.put("/products/{products_id}")
+async def update_products(products_id: int, edited_products: Edited_product):
+    for products in data["products"]:
+        if products["id"] == products_id:
+            products["name"] = edited_products.name or products["name"]
+            products["price"] = edited_products.price or products["price"]
+            products["quantity"] = edited_products.quantity or products["quantity"]
+            products["category"] = edited_products.category or products["category"]
+            return products
+    return {"error": "Product not found"}
+
+
 """
 All functions that will concern the orders:
 - List all orders
@@ -188,10 +210,13 @@ async def get_order_by_id(order_id: int):
     for order in data["orders"]:
         if order["id"] == order_id:
             return order
+
+
 @app.post("/orders")
-async def create_order(new_order : Order):
+async def create_order(new_order: Order):
     data["orders"].append(new_order)
     return data["orders"]
+
 
 """
 All functions that will concern the categories:
