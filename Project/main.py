@@ -370,8 +370,14 @@ All functions that will concern the categories:
 
 # List all categories
 @app.get("/categories")
-async def get_all_categories():
-    if data["categories"]:
+async def get_all_categories(sort: str = None):
+    if sort is not None:
+        if sort == "title":
+            return sorted(data["categories"], key=lambda k: k["title"])
+        elif sort == "title_desc":
+            return sorted(data["categories"], key=lambda k: k["title"], reverse=True)
+        raise HTTPException(status_code=400, detail="Error: Invalid sort parameter")
+    elif data["categories"]:
         return data["categories"]
     raise HTTPException(status_code=404, detail="Error: No categories found")
 
