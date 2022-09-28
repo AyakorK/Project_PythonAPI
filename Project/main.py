@@ -246,6 +246,16 @@ async def create_categories(item: CategoriesItem):
     return data["categories"]
 
 
+# Get products by the category
+@app.get("/categories/{category_id}/products")
+async def get_products_by_category(category_id: int):
+    products = []
+    for product in data["products"]:
+        if product["category"] == category_id:
+            products.append(product)
+    return products
+
+
 # Update a category
 @app.put("/categories/{category_id}")
 async def update_categories(category_id: int, item: EditCategory):
