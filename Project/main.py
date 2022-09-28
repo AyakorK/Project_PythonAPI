@@ -7,7 +7,6 @@ import string
 app = FastAPI()
 data = json.load(open("Project/db.json"))
 
-
 """
 Definition of every classes used in the API
 - User
@@ -15,6 +14,7 @@ Definition of every classes used in the API
 - Orders
 - Categories
 """
+
 
 class User(BaseModel):
     password: str
@@ -24,16 +24,20 @@ class User(BaseModel):
     money: int = None
     admin: int = None
 
+
 class categories_item(BaseModel):
     id: int = None
     title: str
 
+
 class Edit_category(BaseModel):
     title: str = None
+
 
 @app.get("/")
 async def root():
     return data
+
 
 """
 All functions that will concern the user:
@@ -45,11 +49,13 @@ All functions that will concern the user:
 - Delete a user
 """
 
+
 @app.get("/users")
 async def get_users():
     if data["users"]:
         return data["users"]
     return {"message": "No users found"}
+
 
 @app.get("/users/{user_id}")
 async def get_user(user_id: int):
@@ -57,6 +63,7 @@ async def get_user(user_id: int):
         if user["id"] == user_id:
             return user
     return {"error": "User not found"}
+
 
 @app.get("/users/{user_id}/orders")
 async def get_user_orders(user_id: int):
@@ -68,16 +75,18 @@ async def get_user_orders(user_id: int):
             return order
     return {"error": "This user has no active orders"}
 
+
 @app.post("/users")
 async def create_user(new_user: User):
     new_user.id = data["users"][-1]["id"] + 1
     new_user.token = "".join(random.choices(string.ascii_lowercase + string.digits, k=22))
-    new_user.admin = 0 # default to 0
+    new_user.admin = 0  # default to 0
     new_user.money = 3000
     if any(user["email"] == new_user.email for user in data["users"]):
         return {"error": "User already exists"}
     data["users"].append(new_user.dict())
     return data["users"]
+
 
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int):
@@ -97,14 +106,16 @@ All functions that will concern the products:
 - Delete a product
 """
 
+
 @app.get("/products")
 async def root():
     if data["products"]:
         return data["products"]
     return {"message": "No products found"}
 
+
 @app.get("/products/{products_id}")
-async def get_products_by_id(products_id:int):
+async def get_products_by_id(products_id: int):
     for products in data["products"]:
         if products["id"] == products_id:
             return products
@@ -120,14 +131,16 @@ All functions that will concern the orders:
 - Delete an order
 """
 
+
 @app.get("/orders")
 async def get_order():
     return data["orders"]
 
+
 @app.get("/orders/{order_id}")
 async def get_order_by_id(order_id: int):
-    for order in data["orders"] :
-        if order["id"] == order_id :
+    for order in data["orders"]:
+        if order["id"] == order_id:
             return order
 
 
@@ -140,12 +153,16 @@ All functions that will concern the categories:
 - Delete a category
 """
 
+
+# List all categories
 @app.get("/categories")
 async def get_allCategories():
     if data["categories"]:
         return data["categories"]
     return {"message": "No categories found"}
 
+
+# Get details from a category (by ID)
 @app.get("/categories/{category_id}")
 async def get_categories(category_id: int):
     for category in data["categories"]:
@@ -153,6 +170,11 @@ async def get_categories(category_id: int):
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
 
+
+
+
+
+# Create a category
 @app.post("/categories")
 async def create_categories(item: categories_item):
     item.id = data["categories"][-1]["id"] + 1
@@ -161,6 +183,8 @@ async def create_categories(item: categories_item):
     data["categories"].append(item.dict())
     return data["categories"]
 
+
+# Update a category
 @app.put("/categories/{category_id}")
 async def update_categories(category_id: int, item: Edit_category):
     if any(category["title"] == item.title for category in data["categories"]):
@@ -171,6 +195,8 @@ async def update_categories(category_id: int, item: Edit_category):
             return category
     return {"error": "Category not found"}
 
+
+# Delete a category
 @app.delete("/categories/{category_id}")
 async def delete_categories(category_id: int):
     for category in data["categories"]:
