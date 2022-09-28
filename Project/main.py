@@ -24,6 +24,10 @@ class User(BaseModel):
     money: int = None
     admin: int = None
 
+class categoriesItem(BaseModel):
+    id: int = None
+    title: str
+
 @app.get("/")
 async def root():
     return data
@@ -146,3 +150,10 @@ async def get_categories(category_id: int):
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
 
+@app.post("/categories")
+async def post_categories(item: categoriesItem):
+    item.id = data["categories"][-1]["id"] + 1
+    if any(category["title"] == item.title for category in data["categories"]):
+        return {"error": "Category already exists"}
+    data["categories"].append(item.dict())
+    return data["categories"]
