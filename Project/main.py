@@ -276,3 +276,11 @@ async def delete_categories(category_id: int):
             data["categories"].remove(category)
             return {"message": "Category deleted"}
     return {"error": "Category not found"}
+
+@app.delete("/products/{product_id}")
+async def delete_product(product_id: int):
+    for product in data["products"]:
+        if product["id"] == product_id:
+            data["products"].remove(product)
+            return {"message": "Product deleted"}
+    return {"error": "Product not found"}
