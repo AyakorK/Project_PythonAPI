@@ -38,6 +38,17 @@ class Order(BaseModel):
     id:int
     products: list
 
+class Product(BaseModel):
+    id: int
+    name: str
+    price: float
+    quantity: int
+class Edited_Order(BaseModel):
+    user_id: int = None
+    total_price: int = None
+    id:int = None
+    products: list = None
+
 @app.get("/")
 async def root():
     return data
@@ -150,10 +161,53 @@ async def get_order_by_id(order_id: int):
     for order in data["orders"] :
         if order["id"] == order_id :
             return order
+@app.get("/orders/{order_id}/products")
+async def get_products_in_order(order_id: int):
+    for order in data["orders"] :
+        if order["id"] == order_id:
+            return order["products"]
 @app.post("/orders")
 async def create_order(new_order : Order):
     data["orders"].append(new_order)
     return data["orders"]
+@app.put("/orders/{order_id}")
+async def update_order(order_id: int, edited_order: Edited_Order):
+    if any(order["id"] == edited_order.id for order in data["orders"]):
+        return {"error": "Order id already used"}
+    for order in data["orders"]:
+        if order["id"] == order_id:
+            order["user_id"] = edited_order.user_id or order["user_id"]
+            order["total_price"] = edited_order.total_price or order["total_price"]
+            order["id"] = edited_order.id or order["id"]
+            order["products"] = edited_order.products or order["products"]
+            return data["orders"]
+    return {"error": "Order not found"}
+@app.put("/orders/{order_id}/products")
+async def add_product_in_order(order_id: int, product: Product):
+    for order in data["orders"]:
+        if any(products["id"] == product.id for products in order["products"]):
+            return {"error": "Product id already used"}
+        if order["id"] == order_id:
+            order["product"] = order["products"].append(product)
+            return data["orders"]
+    return {"error": "Order not found"}
+@app.put("/orders/{order_id}/products/{product_id}")
+async def delete_product_in_order(order_id: int, product_id: int):
+    for order in data["orders"]:
+        if order["id"] == order_id:
+            for product in order["products"]:
+                if product["id"] == product_id :
+                    order["products"].remove(product)
+                    return order["products"]
+            return {"error": "product not found"}
+    return {"error": "Order not found"}
+@app.delete("/orders/{order_id}")
+async def delete_order(order_id: int):
+    for order in data["orders"]:
+        if order["id"] == order_id :
+            data["orders"].remove(order)
+            return {"message": "Order deleted"}
+    return {"error": "order not found"}
 
 """
 All functions that will concern the categories:
