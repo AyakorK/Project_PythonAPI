@@ -11,6 +11,7 @@ data = json.load(open("Project/db.json"))
 """
 Definition of every classes used in the API
 - User
+- Edited User
 - Products
 - Orders
 - Categories
@@ -23,10 +24,12 @@ class User(BaseModel):
     token: str = None
     money: int = None
     admin: int = None
-
 class categoriesItem(BaseModel):
     id: int = None
     title: str
+class Edited_user(BaseModel):
+    password: str = None
+    email: str = None
 
 @app.get("/")
 async def root():
@@ -69,12 +72,23 @@ async def get_user_orders(user_id: int):
 async def create_user(new_user: User):
     new_user.id = data["users"][-1]["id"] + 1
     new_user.token = "".join(random.choices(string.ascii_lowercase + string.digits, k=22))
-    new_user.admin = 0 # default to 0
+    new_user.admin = 0
     new_user.money = 3000
     if any(user["email"] == new_user.email for user in data["users"]):
         return {"error": "User already exists"}
     data["users"].append(new_user.dict())
     return data["users"]
+
+@app.put("/users/{user_id}")
+async def update_user(user_id: int, edited_user: Edited_user):
+    if any(user["email"] == edited_user.email for user in data["users"]):
+        return {"error": "Email already used"}
+    for user in data["users"]:
+        if user["id"] == user_id:
+            user["password"] = edited_user.password or user["password"]
+            user["email"] = edited_user.email or user["email"]
+            return data["users"]
+    return {"error": "User not found"}
 
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int):
@@ -94,7 +108,7 @@ All functions that will concern the products:
 - Delete a product
 """
 
-@app.get("/{products}")
+@app.get("/products")
 async def root():
     if data["products"]:
         return data["products"]
