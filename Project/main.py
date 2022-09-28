@@ -39,6 +39,12 @@ class EditedUser(BaseModel):
     password: str = None
     email: str = None
 
+class Product(BaseModel):
+    name: str
+    price: int
+    id: int = None
+    category: int
+    quantity : int
 
 class EditedProduct(BaseModel):
     name: str = None
@@ -52,6 +58,13 @@ class Order(BaseModel):
     total_price: int
     id: int = None
     products: list
+
+
+
+class Edited_Order(BaseModel):
+    user_id: int = None
+    total_price: int = None
+    products: list = None
 
 
 class EditCategory(BaseModel):
@@ -186,6 +199,14 @@ async def get_products_by_id(products_id: int):
             return products
     return {"error": "Product not found"}
 
+@app.post("/products")
+async def create_product(new_product: Product):
+    new_product.id = data["products"][-1]["id"] + 1
+    if any(product["name"] == new_product.name for product in data["products"]):
+        return {"error": "Product already exists"}
+    data["products"].append(new_product.dict())
+    return data["products"]
+
 
 @app.put("/products/{products_id}")
 async def update_products(products_id: int, edited_products: EditedProduct):
@@ -222,12 +243,65 @@ async def get_order_by_id(order_id: int):
             return order
 
 
+@app.get("/orders/{order_id}/products")
+async def get_products_in_order(order_id: int):
+    for order in data["orders"] :
+        if order["id"] == order_id:
+            return order["products"]
+    return {"error":"Order not found"}
+
 @app.post("/orders")
 async def create_order(new_order: Order):
     new_order.id = data["orders"][-1]["id"] + 1
     data["orders"].append(new_order)
     write_db()
     return data["orders"]
+
+
+@app.put("/orders/{order_id}")
+async def update_order(order_id: int, edited_order: Edited_Order):
+    if any(order["id"] == edited_order.id for order in data["orders"]):
+        return {"error": "Order id already used"}
+    for order in data["orders"]:
+        if order["id"] == order_id:
+            order["user_id"] = edited_order.user_id or order["user_id"]
+            order["total_price"] = edited_order.total_price or order["total_price"]
+            order["id"] = edited_order.id or order["id"]
+            order["products"] = edited_order.products or order["products"]
+            return data["orders"]
+    return {"error": "Order not found"}
+
+
+@app.put("/orders/{order_id}/products")
+async def add_product_in_order(order_id: int, product: Product):
+    for order in data["orders"]:
+        if any(products["id"] == product.id for products in order["products"]):
+            return {"error": "Product id already used"}
+        if order["id"] == order_id:
+            order["product"] = order["products"].append(product)
+            return data["orders"]
+    return {"error": "Order not found"}
+
+
+@app.put("/orders/{order_id}/products/{product_id}")
+async def delete_product_in_order(order_id: int, product_id: int):
+    for order in data["orders"]:
+        if order["id"] == order_id:
+            for product in order["products"]:
+                if product["id"] == product_id :
+                    order["products"].remove(product)
+                    return order["products"]
+            return {"error": "product not found"}
+    return {"error": "Order not found"}
+
+
+@app.delete("/orders/{order_id}")
+async def delete_order(order_id: int):
+    for order in data["orders"]:
+        if order["id"] == order_id :
+            data["orders"].remove(order)
+            return {"message": "Order deleted"}
+    return {"error": "Order not found"}
 
 
 """
@@ -256,7 +330,6 @@ async def get_categories(category_id: int):
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
 
-
 # Create a category
 @app.post("/categories")
 async def create_categories(item: CategoriesItem):
@@ -266,6 +339,15 @@ async def create_categories(item: CategoriesItem):
     data["categories"].append(item.dict())
     write_db()
     return data["categories"]
+
+# Get products by the category
+@app.get("/categories/{category_id}/products")
+async def get_products_by_category(category_id: int):
+    products = []
+    for product in data["products"]:
+        if product["category"] == category_id:
+            products.append(product)
+    return products
 
 
 # Update a category
@@ -290,3 +372,11 @@ async def delete_categories(category_id: int):
             write_db()
             return {"message": "Category deleted"}
     return {"error": "Category not found"}
+
+@app.delete("/products/{product_id}")
+async def delete_product(product_id: int):
+    for product in data["products"]:
+        if product["id"] == product_id:
+            data["products"].remove(product)
+            return {"message": "Product deleted"}
+    return {"error": "Product not found"}
