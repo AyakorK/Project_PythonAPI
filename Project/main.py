@@ -280,7 +280,7 @@ async def delete_order(order_id: int):
         if order["id"] == order_id :
             data["orders"].remove(order)
             return {"message": "Order deleted"}
-    return {"error": "order not found"}
+    return {"error": "Order not found"}
 
 
 """
