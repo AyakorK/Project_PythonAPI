@@ -1,19 +1,17 @@
 # HISTORY
 
-1 - Creation of the architecture of our git repository
+## 26/09/2022
+* Creation of the architecture of our git repository
 <br>
-2 - Setup of PythonAPI
+* Setup of PythonAPI
 <br>
-3 - Adding DB to our project
+
+## 27/09/2022
+* Adding DB to our project
 <br>
-## 4
+* Adding List of Users , Categories , Products and Order
 <br>
-  4.1 - Adding List of Users
-  <br>
-  4.2 - Adding List of Categories
-  <br>
-  4.3 - Adding List of Products
-  <br>
-  4.4 - Adding List of Order
-<br>
-5 - 
+
+## 28/09/2022
+* Adding the creation of Users, Categories , Products and Order
+* 
