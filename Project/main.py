@@ -74,6 +74,14 @@ async def create_user(new_user: User):
     data["users"].append(new_user.dict())
     return data["users"]
 
+@app.delete("/users/{user_id}")
+async def delete_user(user_id: int):
+    for user in data["users"]:
+        if user["id"] == user_id:
+            data["users"].remove(user)
+            return {"message": "User deleted"}
+    return {"error": "User not found"}
+
 
 """
 All functions that will concern the products:
