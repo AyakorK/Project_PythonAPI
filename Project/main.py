@@ -35,6 +35,11 @@ class EditedUser(BaseModel):
     password: str = None
     email: str = None
 
+class Product(BaseModel):
+    name: str
+    price: int
+    id: int = None
+    category: int
 
 class EditedProduct(BaseModel):
     name: str = None
@@ -168,6 +173,14 @@ async def get_products_by_id(products_id: int):
             return products
     return {"error": "Product not found"}
 
+@app.post("/products")
+async def create_product(new_product: Product):
+    new_product.id = data["products"][-1]["id"] + 1
+    if any(product["name"] == new_product.name for product in data["products"]):
+        return {"error": "Product already exists"}
+    data["products"].append(new_product.dict())
+    return data["products"]
+
 
 @app.put("/products/{products_id}")
 async def update_products(products_id: int, edited_products: EditedProduct):
@@ -235,22 +248,6 @@ async def get_categories(category_id: int):
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
 
-
-class Product(BaseModel):
-    name: str
-    price: int
-    id: int = None
-    category: int
-
-@app.post("/products")
-async def create_product(new_product: Product):
-    new_product.id = data["products"][-1]["id"] + 1
-    if any(product["name"] == new_product.name for product in data["products"]):
-        return {"error": "Product already exists"}
-    data["products"].append(new_product.dict())
-    return data["products"]
-
-
 # Create a category
 @app.post("/categories")
 async def create_categories(item: CategoriesItem):
@@ -259,7 +256,6 @@ async def create_categories(item: CategoriesItem):
         return {"error": "Category already exists"}
     data["categories"].append(item.dict())
     return data["categories"]
-
 
 # Get products by the category
 @app.get("/categories/{category_id}/products")
