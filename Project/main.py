@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import json
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -20,6 +21,15 @@ async def get_order_by_id(order_id: int):
     for order in data["orders"] :
         if order["id"] == order_id :
             return order
+class Order(BaseModel):
+    user_id: int
+    total_price: int
+    id:int
+    products: list
+@app.post("/orders")
+async def create_order(new_order : Order):
+    data["orders"].append(new_order)
+    return data["orders"]
 
 @app.get("/users")
 async def get_users():
