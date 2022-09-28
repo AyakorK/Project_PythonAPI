@@ -4,12 +4,14 @@ from pydantic import BaseModel
 import random
 import string
 
+
 app = FastAPI()
 data = json.load(open("Project/db.json"))
 
 """
 Definition of every classes used in the API
 - User
+- Edited User
 - Products
 - Orders
 - Categories
@@ -28,6 +30,16 @@ class User(BaseModel):
 class categories_item(BaseModel):
     id: int = None
     title: str
+    
+class Edited_user(BaseModel):
+    password: str = None
+    email: str = None
+
+class Order(BaseModel):
+    user_id: int
+    total_price: int
+    id:int
+    products: list
 
 
 class Edit_category(BaseModel):
@@ -64,6 +76,27 @@ async def get_user(user_id: int):
             return user
     return {"error": "User not found"}
 
+@app.post("/users")
+async def create_user(new_user: User):
+    new_user.id = data["users"][-1]["id"] + 1
+    new_user.token = "".join(random.choices(string.ascii_lowercase + string.digits, k=22))
+    new_user.admin = 0
+    new_user.money = 3000
+    if any(user["email"] == new_user.email for user in data["users"]):
+        return {"error": "User already exists"}
+    data["users"].append(new_user.dict())
+    return data["users"]
+
+@app.put("/users/{user_id}")
+async def update_user(user_id: int, edited_user: Edited_user):
+    if any(user["email"] == edited_user.email for user in data["users"]):
+        return {"error": "Email already used"}
+    for user in data["users"]:
+        if user["id"] == user_id:
+            user["password"] = edited_user.password or user["password"]
+            user["email"] = edited_user.email or user["email"]
+            return data["users"]
+    return {"error": "User not found"}
 
 @app.get("/users/{user_id}/orders")
 async def get_user_orders(user_id: int):
@@ -86,6 +119,19 @@ async def create_user(new_user: User):
         return {"error": "User already exists"}
     data["users"].append(new_user.dict())
     return data["users"]
+    
+@app.get("/users/{user_id}/orders/{order_id}")
+async def get_user_order(user_id: int, order_id: int):
+    # If the user does not exist
+    if not any(user["id"] == user_id for user in data["users"]):
+        return {"error": "User not found"}
+    # If the order does not exist
+    if not any(order["id"] == order_id for order in data["orders"]):
+        return {"error": "Order not found"}
+    for order in data["orders"]:
+        if order["user_id"] == user_id and order["id"] == order_id:
+            return order
+    return {"error": "This order does not belong to this user"}
 
 
 @app.delete("/users/{user_id}")
@@ -142,7 +188,10 @@ async def get_order_by_id(order_id: int):
     for order in data["orders"]:
         if order["id"] == order_id:
             return order
-
+@app.post("/orders")
+async def create_order(new_order : Order):
+    data["orders"].append(new_order)
+    return data["orders"]
 
 """
 All functions that will concern the categories:
