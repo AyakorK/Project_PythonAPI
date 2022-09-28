@@ -40,6 +40,7 @@ class Product(BaseModel):
     price: int
     id: int = None
     category: int
+    quantity : int
 
 class EditedProduct(BaseModel):
     name: str = None
