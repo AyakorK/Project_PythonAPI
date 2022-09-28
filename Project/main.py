@@ -68,16 +68,6 @@ async def get_user(user_id: int):
             return user
     return {"error": "User not found"}
 
-@app.get("/users/{user_id}/orders")
-async def get_user_orders(user_id: int):
-    # If the user does not exist
-    if not any(user["id"] == user_id for user in data["users"]):
-        return {"error": "User not found"}
-    for order in data["orders"]:
-        if order["user_id"] == user_id:
-            return order
-    return {"error": "This user has no active orders"}
-
 @app.post("/users")
 async def create_user(new_user: User):
     new_user.id = data["users"][-1]["id"] + 1
@@ -99,6 +89,29 @@ async def update_user(user_id: int, edited_user: Edited_user):
             user["email"] = edited_user.email or user["email"]
             return data["users"]
     return {"error": "User not found"}
+
+@app.get("/users/{user_id}/orders")
+async def get_user_orders(user_id: int):
+    # If the user does not exist
+    if not any(user["id"] == user_id for user in data["users"]):
+        return {"error": "User not found"}
+    for order in data["orders"]:
+        if order["user_id"] == user_id:
+            return order
+    return {"error": "This user has no active orders"}
+
+@app.get("/users/{user_id}/orders/{order_id}")
+async def get_user_order(user_id: int, order_id: int):
+    # If the user does not exist
+    if not any(user["id"] == user_id for user in data["users"]):
+        return {"error": "User not found"}
+    # If the order does not exist
+    if not any(order["id"] == order_id for order in data["orders"]):
+        return {"error": "Order not found"}
+    for order in data["orders"]:
+        if order["user_id"] == user_id and order["id"] == order_id:
+            return order
+    return {"error": "This order does not belong to this user"}
 
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int):
