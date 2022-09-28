@@ -146,3 +146,18 @@ async def get_categories(category_id: int):
             return category
     return {"error": str(category_id) + " isn't a valid category id"}
 
+
+class Product(BaseModel):
+    name: str
+    price: int
+    id: int = None
+    category: int
+
+@app.post("/products")
+async def create_product(new_product: Product):
+    new_product.id = data["products"][-1]["id"] + 1
+    if any(product["name"] == new_product.name for product in data["products"]):
+        return {"error": "Product already exists"}
+    data["products"].append(new_product.dict())
+    return data["products"]
+
