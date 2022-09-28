@@ -109,7 +109,9 @@ async def get_users(token: str = None, sort: str = None):
         elif sort == "money_desc":
             return sorted(data["users"], key=lambda k: k["money"], reverse=True)
         raise HTTPException(status_code=400, detail="Error: Invalid sort parameter")
-    return data["users"]
+    elif data["users"]:
+        return data["users"]
+    raise HTTPException(status_code=404, detail="Error: No users found")
 
 
 @app.get("/users/{user_id}")
@@ -192,8 +194,26 @@ All functions that will concern the products:
 
 
 @app.get("/products")
-async def root():
-    if data["products"]:
+async def root(sort: str = None):
+    if sort is not None:
+        if sort == "name":
+            return sorted(data["products"], key=lambda k: k["name"].lower())
+        elif sort == "price":
+            return sorted(data["products"], key=lambda k: k["price"])
+        elif sort == "category":
+            return sorted(data["products"], key=lambda k: k["category"])
+        elif sort == "quantity":
+            return sorted(data["products"], key=lambda k: k["quantity"])
+        elif sort == "name_desc":
+            return sorted(data["products"], key=lambda k: k["name"].lower(), reverse=True)
+        elif sort == "price_desc":
+            return sorted(data["products"], key=lambda k: k["price"], reverse=True)
+        elif sort == "category_desc":
+            return sorted(data["products"], key=lambda k: k["category"], reverse=True)
+        elif sort == "quantity_desc":
+            return sorted(data["products"], key=lambda k: k["quantity"], reverse=True)
+        raise HTTPException(status_code=400, detail="Error: Invalid sort parameter")
+    elif data["products"]:
         return data["products"]
     raise HTTPException(status_code=404, detail="Error: No products found")
 
@@ -253,8 +273,20 @@ All functions that will concern the orders:
 
 
 @app.get("/orders")
-async def get_order():
-    return data["orders"]
+async def get_order(sort: str = None):
+    if sort is not None:
+        if sort == "user":
+            return sorted(data["orders"], key=lambda k: k["user_id"])
+        elif sort == "total":
+            return sorted(data["orders"], key=lambda k: k["total_price"])
+        elif sort == "user_desc":
+            return sorted(data["orders"], key=lambda k: k["user_id"], reverse=True)
+        elif sort == "total_desc":
+            return sorted(data["orders"], key=lambda k: k["total_price"], reverse=True)
+        raise HTTPException(status_code=400, detail="Error: Invalid sort parameter")
+    elif data["orders"]:
+        return data["orders"]
+    raise HTTPException(status_code=404, detail="Error: No orders found")
 
 
 @app.get("/orders/{order_id}")
@@ -340,8 +372,14 @@ All functions that will concern the categories:
 
 # List all categories
 @app.get("/categories")
-async def get_all_categories():
-    if data["categories"]:
+async def get_all_categories(sort: str = None):
+    if sort is not None:
+        if sort == "title":
+            return sorted(data["categories"], key=lambda k: k["title"])
+        elif sort == "title_desc":
+            return sorted(data["categories"], key=lambda k: k["title"], reverse=True)
+        raise HTTPException(status_code=400, detail="Error: Invalid sort parameter")
+    elif data["categories"]:
         return data["categories"]
     raise HTTPException(status_code=404, detail="Error: No categories found")
 
