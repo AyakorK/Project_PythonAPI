@@ -28,19 +28,6 @@ class User(BaseModel):
 async def root():
     return data
 
-@app.get("/{products}")
-async def root():
-    return data["products"]
-
-@app.get("/products/{products_id}")
-async def get_products_by_id(products_id:int):
-    for products in data["products"]:
-        if products["id"] == products_id:
-            return products
-        if not any(products["id"] == products_id for products in data["products"]):
-            return {"error": "Product not found"}
-
-
 """
 All functions that will concern the user:
 - List all users
@@ -102,6 +89,19 @@ All functions that will concern the products:
 - Update a product
 - Delete a product
 """
+
+@app.get("/{products}")
+async def root():
+    if data["products"]:
+        return data["products"]
+    return {"message": "No products found"}
+
+@app.get("/products/{products_id}")
+async def get_products_by_id(products_id:int):
+    for products in data["products"]:
+        if products["id"] == products_id:
+            return products
+    return {"error": "Product not found"}
 
 
 """
