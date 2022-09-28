@@ -109,7 +109,9 @@ async def get_users(token: str = None, sort: str = None):
         elif sort == "money_desc":
             return sorted(data["users"], key=lambda k: k["money"], reverse=True)
         raise HTTPException(status_code=400, detail="Error: Invalid sort parameter")
-    return data["users"]
+    elif data["users"]:
+        return data["users"]
+    raise HTTPException(status_code=404, detail="Error: No users found")
 
 
 @app.get("/users/{user_id}")
