@@ -26,11 +26,10 @@ class User(BaseModel):
     admin: int = None
 
 
-class categoriesItem(BaseModel):
+class categories_item(BaseModel):
     id: int = None
     title: str
-
-
+    
 class Edited_user(BaseModel):
     password: str = None
     email: str = None
@@ -48,6 +47,10 @@ class Order(BaseModel):
     total_price: int
     id: int
     products: list
+
+
+class Edit_category(BaseModel):
+    title: str = None
 
 
 @app.get("/")
@@ -116,6 +119,17 @@ async def get_user_orders(user_id: int):
     return {"error": "This user has no active orders"}
 
 
+@app.post("/users")
+async def create_user(new_user: User):
+    new_user.id = data["users"][-1]["id"] + 1
+    new_user.token = "".join(random.choices(string.ascii_lowercase + string.digits, k=22))
+    new_user.admin = 0  # default to 0
+    new_user.money = 3000
+    if any(user["email"] == new_user.email for user in data["users"]):
+        return {"error": "User already exists"}
+    data["users"].append(new_user.dict())
+    return data["users"]
+    
 @app.get("/users/{user_id}/orders/{order_id}")
 async def get_user_order(user_id: int, order_id: int):
     # If the user does not exist
@@ -214,6 +228,7 @@ All functions that will concern the categories:
 """
 
 
+# List all categories
 @app.get("/categories")
 async def get_allCategories():
     if data["categories"]:
@@ -221,6 +236,7 @@ async def get_allCategories():
     return {"message": "No categories found"}
 
 
+# Get details from a category (by ID)
 @app.get("/categories/{category_id}")
 async def get_categories(category_id: int):
     for category in data["categories"]:
@@ -229,8 +245,12 @@ async def get_categories(category_id: int):
     return {"error": str(category_id) + " isn't a valid category id"}
 
 
+
+
+
+# Create a category
 @app.post("/categories")
-async def post_categories(item: categoriesItem):
+async def create_categories(item: categories_item):
     item.id = data["categories"][-1]["id"] + 1
     if any(category["title"] == item.title for category in data["categories"]):
         return {"error": "Category already exists"}
@@ -238,6 +258,19 @@ async def post_categories(item: categoriesItem):
     return data["categories"]
 
 
+# Update a category
+@app.put("/categories/{category_id}")
+async def update_categories(category_id: int, item: Edit_category):
+    if any(category["title"] == item.title for category in data["categories"]):
+        return {"error": "Category already exists"}
+    for category in data["categories"]:
+        if category["id"] == category_id:
+            category["title"] = item.title or category["title"]
+            return category
+    return {"error": "Category not found"}
+
+
+# Delete a category
 @app.delete("/categories/{category_id}")
 async def delete_categories(category_id: int):
     for category in data["categories"]:
