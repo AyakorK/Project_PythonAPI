@@ -56,12 +56,6 @@ class Order(BaseModel):
     products: list
 
 
-class Product(BaseModel):
-    id: int
-    name: str
-    price: float
-    quantity: int
-
 
 class Edited_Order(BaseModel):
     user_id: int = None
