@@ -160,7 +160,7 @@ async def create_user(new_user: User):
     return data["users"]
 
 
-@app.put("/users/{user_id}")
+@app.patch("/users/{user_id}")
 async def update_user(user_id: int, edited_user: EditedUser):
     if any(user["email"] == edited_user.email for user in data["users"]):
         return {"error": "Error: Email already used"}
@@ -236,7 +236,7 @@ async def create_product(new_product: Product):
     return data["products"]
 
 
-@app.put("/products/{products_id}")
+@app.patch("/products/{products_id}")
 async def update_products(products_id: int, edited_products: EditedProduct):
     for products in data["products"]:
         if products["id"] == products_id:
@@ -315,7 +315,7 @@ async def create_order(new_order: Order):
     return data["orders"]
 
 
-@app.put("/orders/{order_id}")
+@app.patch("/orders/{order_id}")
 async def update_order(order_id: int, edited_order: EditedOrder):
     for order in data["orders"]:
         if order["id"] == order_id:
@@ -415,7 +415,7 @@ async def create_categories(item: CategoriesItem):
 
 
 # Update a category
-@app.put("/categories/{category_id}")
+@app.patch("/categories/{category_id}")
 async def update_categories(category_id: int, item: EditCategory):
     if any(category["title"] == item.title for category in data["categories"]):
         raise HTTPException(status_code=400, detail="Error: Category already exists")
