@@ -326,7 +326,7 @@ async def update_order(order_id: int, edited_order: EditedOrder):
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
 
-@app.patch("/orders/{order_id}/products")
+@app.put("/orders/{order_id}/products")
 async def add_product_in_order(order_id: int, product: Product):
     for order in data["orders"]:
         if any(products["id"] == product.id for products in order["products"]):
@@ -337,7 +337,7 @@ async def add_product_in_order(order_id: int, product: Product):
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
 
-@app.patch("/orders/{order_id}/products/{product_id}")
+@app.put("/orders/{order_id}/products/{product_id}")
 async def delete_product_in_order(order_id: int, product_id: int):
     for order in data["orders"]:
         if order["id"] == order_id:
