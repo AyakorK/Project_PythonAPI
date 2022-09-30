@@ -180,7 +180,7 @@ async def get_user_order(user_id: int, order_id: int):
     raise HTTPException(status_code=404, detail="Error: This order does not belong to a user")
 
 
-# Create an user, add and ID and randomly generate a token
+# Create a user, add and ID and randomly generate a token
 @app.post("/users")
 async def create_user(new_user: User):
     new_user.id = data["users"][-1]["id"] + 1
@@ -194,7 +194,7 @@ async def create_user(new_user: User):
     return data["users"]
 
 
-# Update an user
+# Update a user
 @app.patch("/users/{user_id}")
 async def update_user(user_id: int, edited_user: EditedUser):
     if any(user["email"] == edited_user.email for user in data["users"]):
