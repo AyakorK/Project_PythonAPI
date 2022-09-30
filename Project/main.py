@@ -33,6 +33,7 @@ Definition of every classes used in the API
     params: name
 """
 
+
 # Create a class for the user
 class User(BaseModel):
     password: str
@@ -42,10 +43,12 @@ class User(BaseModel):
     money: int = None
     admin: int = None
 
+
 # Create a class to edit the user
 class EditedUser(BaseModel):
     password: str = None
     email: str = None
+
 
 # Create a class for the products
 class Product(BaseModel):
@@ -55,12 +58,14 @@ class Product(BaseModel):
     category: int
     quantity: int
 
+
 # Create a class to edit the products
 class EditedProduct(BaseModel):
     name: str = None
     price: int = None
     quantity: int = None
     category: int = None
+
 
 # Create a class for the orders
 class Order(BaseModel):
@@ -69,20 +74,24 @@ class Order(BaseModel):
     id: int = None
     products: list
 
+
 # Create a class to edit the orders
 class EditedOrder(BaseModel):
     user_id: int = None
     total_price: int = None
     products: list = None
 
+
 # Create a class for the categories of the products
 class Category(BaseModel):
     id: int = None
     title: str
 
+
 # Create a class to edit the categories
 class EditCategory(BaseModel):
     title: str = None
+
 
 # This is the base route of the api that return all the data
 @app.get("/")
@@ -108,6 +117,7 @@ All functions that will concern the user:
 - Delete a user
     root: /products/{id} (DELETE)
 """
+
 
 # list all users and permit it to be sorted by ID, email or money
 @app.get("/users")
@@ -395,13 +405,15 @@ async def delete_product_in_order(order_id: int, product_id: int):
         if order["id"] == order_id:
             select_product_and_delete_it(order, product_id)
             return order["products"]
-        raise HTTPException(status_code=404, detail="Error: Product not found")
     raise HTTPException(status_code=404, detail="Error: Order not found")
+
+
 def select_product_and_delete_it(order, product_id):
     for product in order["products"]:
         if product["id"] == product_id:
             order["products"].remove(product)
-
+            return order["products"]
+    raise HTTPException(status_code=404, detail="Error: Product not found")
 
 
 # Delete an order
