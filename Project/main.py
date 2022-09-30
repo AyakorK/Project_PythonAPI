@@ -371,7 +371,7 @@ async def get_products_in_order(order_id: int):
 @app.post("/orders")
 async def create_order(new_order: Order):
     new_order.id = data["orders"][-1]["id"] + 1
-    data["orders"].append(new_order)
+    data["orders"].append(new_order.dict())
     write_db()
     return data["orders"]
 
@@ -396,7 +396,7 @@ async def add_product_in_order(order_id: int, product: Product):
         if any(products["id"] == product.id for products in order["products"]):
             raise HTTPException(status_code=404, detail="Error: Product not found")
         if order["id"] == order_id:
-            order["product"] = order["products"].append(product)
+            order["products"].append(product.dict())
             write_db()
             return data["orders"]
     raise HTTPException(status_code=404, detail="Error: Order not found")
