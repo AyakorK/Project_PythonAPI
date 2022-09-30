@@ -73,7 +73,7 @@ class EditedOrder(BaseModel):
 class EditCategory(BaseModel):
     title: str = None
 
-#This is the base route of the api that return all of the data
+#This is the base route of the api that return all the data
 @app.get("/")
 async def root():
     return data
@@ -123,7 +123,7 @@ async def get_user(user_id: int):
     raise HTTPException(status_code=404, detail="Error: User not found")
 
 
-# get every orders made by a specific user
+# get every order made by a specific user
 @app.get("/users/{user_id}/orders")
 async def get_user_orders(user_id: int):
     # If the user does not exist
@@ -330,7 +330,7 @@ async def create_order(new_order: Order):
     return data["orders"]
 
 
-# update an order tnaks to his id
+# update an order thanks to his id
 @app.patch("/orders/{order_id}")
 async def update_order(order_id: int, edited_order: EditedOrder):
     for order in data["orders"]:
