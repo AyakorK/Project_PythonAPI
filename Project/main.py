@@ -16,13 +16,24 @@ def write_db():
 """
 Definition of every classes used in the API
 - User
+    params: password, email, money, admin, token, id
 - Edited User
+    params: password, email
 - Products
+    params: name, price, category, quantity, id
+- Edited Products
+    params: name, price, category, quantity
 - Orders
+    params: products, total_price, id, user_id
+- Edited Orders
+    params: products, total_price
 - Categories
+    params: name, id
+- Edited Categories
+    params: name
 """
 
-# create a class for the user
+# Create a class for the user
 class User(BaseModel):
     password: str
     email: str
@@ -31,17 +42,12 @@ class User(BaseModel):
     money: int = None
     admin: int = None
 
-# create a class for the categories of the products
-class CategoriesItem(BaseModel):
-    id: int = None
-    title: str
-
-# create a class to edit the user
+# Create a class to edit the user
 class EditedUser(BaseModel):
     password: str = None
     email: str = None
 
-# create a class for the products
+# Create a class for the products
 class Product(BaseModel):
     name: str
     price: int
@@ -49,31 +55,36 @@ class Product(BaseModel):
     category: int
     quantity: int
 
-# create a class to edit the products
+# Create a class to edit the products
 class EditedProduct(BaseModel):
     name: str = None
     price: int = None
     quantity: int = None
     category: int = None
 
-# create a class for the orders
+# Create a class for the orders
 class Order(BaseModel):
     user_id: int
     total_price: int
     id: int = None
     products: list
 
-# create a class to edit the orders
+# Create a class to edit the orders
 class EditedOrder(BaseModel):
     user_id: int = None
     total_price: int = None
     products: list = None
 
-# create a class to edit the categories
+# Create a class for the categories of the products
+class Category(BaseModel):
+    id: int = None
+    title: str
+
+# Create a class to edit the categories
 class EditCategory(BaseModel):
     title: str = None
 
-#This is the base route of the api that return all of the data
+# This is the base route of the api that return all the data
 @app.get("/")
 async def root():
     return data
@@ -82,12 +93,20 @@ async def root():
 """
 All functions that will concern the user:
 - List all users and permit it to be sorted
+    root: /products (GET)
+    params: sort (str), token (str)
 - Get details from a user (by ID)
+    root: /products/{id} (GET)
 - Get every orders made by a user (by ID)
+    root: /products/{id}/orders (GET)
 - Get one order made by a user (by ID)
+    root: /products/{id}/orders/{order_id} (GET)
 - Create a user
+    root: /products (POST)
 - Update a user
+    root: /products/{id} (PATCH)
 - Delete a user
+    root: /products/{id} (DELETE)
 """
 
 # list all users and permit it to be sorted by ID, email or money
@@ -123,7 +142,7 @@ async def get_user(user_id: int):
     raise HTTPException(status_code=404, detail="Error: User not found")
 
 
-# get every orders made by a specific user
+# get every order made by a specific user
 @app.get("/users/{user_id}/orders")
 async def get_user_orders(user_id: int):
     # If the user does not exist
@@ -192,10 +211,16 @@ async def delete_user(user_id: int):
 """
 All functions that will concern the products:
 - List all products
+    root: /products (GET)
 - Get details from a product (by ID)
+    root: /products/{product_id} (GET)
+    params: token (str)
 - Create a product
+    root: /products (POST)
 - Update a product
+    root: /products/{product_id} (PATCH)
 - Delete a product
+    root: /products/{product_id} (DELETE)
 """
 
 
@@ -273,13 +298,22 @@ async def delete_product(product_id: int):
 """
 All functions that will concern the orders:
 - List all orders
+    root: /orders (GET)
+    params: sort (str)
 - Get details from an order (by ID)
+    root: /orders/{order_id} (GET)
 - Get products of an order (by ID)
+    root: /orders/{order_id}/products (GET)
 - Create an order
+    root: /orders (POST)
 - Update an order
+    root: /orders/{order_id} (PATCH)
 - Update products of an order
-- Update only one product of an order
+    root: /orders/{order_id}/products (PUT)
+- Delete only one product of an order
+    root: /orders/{order_id}/products/{product_id} (DELETE)
 - Delete an order
+    root: /orders/{order_id} (DELETE)
 """
 
 
@@ -330,7 +364,7 @@ async def create_order(new_order: Order):
     return data["orders"]
 
 
-# update an order tnaks to his id
+# Update an order thanks to its id
 @app.patch("/orders/{order_id}")
 async def update_order(order_id: int, edited_order: EditedOrder):
     for order in data["orders"]:
@@ -342,7 +376,7 @@ async def update_order(order_id: int, edited_order: EditedOrder):
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
 
-# update products of an order
+# Update products of an order
 @app.put("/orders/{order_id}/products")
 async def add_product_in_order(order_id: int, product: Product):
     for order in data["orders"]:
@@ -354,20 +388,23 @@ async def add_product_in_order(order_id: int, product: Product):
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
 
-# update only one product of an order
-@app.put("/orders/{order_id}/products/{product_id}")
+# Delete only one product of an order
+@app.delete("/orders/{order_id}/products/{product_id}")
 async def delete_product_in_order(order_id: int, product_id: int):
     for order in data["orders"]:
         if order["id"] == order_id:
-            for product in order["products"]:
-                if product["id"] == product_id:
-                    order["products"].remove(product)
-                    return order["products"]
+            select_product_and_delete_it(order, product_id)
+            return order["products"]
         raise HTTPException(status_code=404, detail="Error: Product not found")
     raise HTTPException(status_code=404, detail="Error: Order not found")
+def select_product_and_delete_it(order, product_id):
+    for product in order["products"]:
+        if product["id"] == product_id:
+            order["products"].remove(product)
 
 
-# delete an order
+
+# Delete an order
 @app.delete("/orders/{order_id}")
 async def delete_order(order_id: int):
     for order in data["orders"]:
@@ -381,11 +418,17 @@ async def delete_order(order_id: int):
 """
 All functions that will concern the categories:
 - List all categories
+    root: /categories (GET)
 - Get details from a category (by ID)
+    root: /categories/{category_id} (GET)
 - Get products of a category (by ID)
+    root: /categories/{category_id}/products (GET)
 - Create a category
+    root: /categories (POST)
 - Update a category
+    root: /categories/{category_id} (PATCH)
 - Delete a category
+    root: /categories/{category_id} (DELETE)
 """
 
 
@@ -424,7 +467,7 @@ async def get_products_by_category(category_id: int):
 
 # Create a category
 @app.post("/categories")
-async def create_categories(item: CategoriesItem):
+async def create_categories(item: Category):
     item.id = data["categories"][-1]["id"] + 1
     if any(category["title"] == item.title for category in data["categories"]):
         raise HTTPException(status_code=400, detail="Error: Category already exists")
