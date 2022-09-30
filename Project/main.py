@@ -73,7 +73,7 @@ class EditedOrder(BaseModel):
 class EditCategory(BaseModel):
     title: str = None
 
-#This is the base route of the api that return all the data
+# This is the base route of the api that return all the data
 @app.get("/")
 async def root():
     return data
@@ -242,6 +242,7 @@ async def create_product(new_product: Product):
     if any(product["name"] == new_product.name for product in data["products"]):
         raise HTTPException(status_code=400, detail="Error: Product already exists")
     data["products"].append(new_product.dict())
+    write_db()
     return data["products"]
 
 
@@ -338,6 +339,7 @@ async def update_order(order_id: int, edited_order: EditedOrder):
             order["user_id"] = edited_order.user_id or order["user_id"]
             order["total_price"] = edited_order.total_price or order["total_price"]
             order["products"] = edited_order.products or order["products"]
+            write_db()
             return data["orders"]
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
@@ -350,6 +352,7 @@ async def add_product_in_order(order_id: int, product: Product):
             raise HTTPException(status_code=404, detail="Error: Product not found")
         if order["id"] == order_id:
             order["product"] = order["products"].append(product)
+            write_db()
             return data["orders"]
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
@@ -365,6 +368,11 @@ async def delete_product_in_order(order_id: int, product_id: int):
                     return order["products"]
         raise HTTPException(status_code=404, detail="Error: Product not found")
     raise HTTPException(status_code=404, detail="Error: Order not found")
+def select_product_and_delete_it(order, product_id):
+    for product in order["products"]:
+        if product["id"] == product_id:
+            order["products"].remove(product)
+            write_db()
 
 
 # delete an order
