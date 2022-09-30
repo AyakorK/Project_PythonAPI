@@ -73,12 +73,6 @@
                     "name": "Bureau",
                     "price": 150,
                     "quantity": 2
-                },
-                {
-                    "id": 33,
-                    "name": "Casque audio",
-                    "price": 1000,
-                    "quantity": 2
                 }
             ],
             "total_price": 2300,

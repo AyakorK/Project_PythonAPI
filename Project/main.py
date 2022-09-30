@@ -8,6 +8,7 @@ app = FastAPI()
 data = json.load(open("Project/db.json"))
 
 
+# Write to db.json and update in real time the database
 def write_db():
     with open("Project/db.json", "w") as f:
         json.dump(data, f, indent=4, sort_keys=True, separators=(",", ": "))
@@ -16,13 +17,25 @@ def write_db():
 """
 Definition of every classes used in the API
 - User
+    params: password, email, money, admin, token, id
 - Edited User
+    params: password, email
 - Products
+    params: name, price, category, quantity, id
+- Edited Products
+    params: name, price, category, quantity
 - Orders
+    params: products, total_price, id, user_id
+- Edited Orders
+    params: products, total_price
 - Categories
+    params: name, id
+- Edited Categories
+    params: name
 """
 
 
+# Create a class for the user
 class User(BaseModel):
     password: str
     email: str
@@ -32,16 +45,13 @@ class User(BaseModel):
     admin: int = None
 
 
-class CategoriesItem(BaseModel):
-    id: int = None
-    title: str
-
-
+# Create a class to edit the user
 class EditedUser(BaseModel):
     password: str = None
     email: str = None
 
 
+# Create a class for the products
 class Product(BaseModel):
     name: str
     price: int
@@ -50,6 +60,7 @@ class Product(BaseModel):
     quantity: int
 
 
+# Create a class to edit the products
 class EditedProduct(BaseModel):
     name: str = None
     price: int = None
@@ -57,6 +68,7 @@ class EditedProduct(BaseModel):
     category: int = None
 
 
+# Create a class for the orders
 class Order(BaseModel):
     user_id: int
     total_price: int
@@ -64,16 +76,25 @@ class Order(BaseModel):
     products: list
 
 
+# Create a class to edit the orders
 class EditedOrder(BaseModel):
     user_id: int = None
     total_price: int = None
     products: list = None
 
 
+# Create a class for the categories of the products
+class Category(BaseModel):
+    id: int = None
+    title: str
+
+
+# Create a class to edit the categories
 class EditCategory(BaseModel):
     title: str = None
 
 
+# This is the base route of the api that return all the data
 @app.get("/")
 async def root():
     return data
@@ -82,15 +103,24 @@ async def root():
 """
 All functions that will concern the user:
 - List all users and permit it to be sorted
+    root: /products (GET)
+    params: sort (str), token (str)
 - Get details from a user (by ID)
+    root: /products/{id} (GET)
 - Get every orders made by a user (by ID)
+    root: /products/{id}/orders (GET)
 - Get one order made by a user (by ID)
+    root: /products/{id}/orders/{order_id} (GET)
 - Create a user
+    root: /products (POST)
 - Update a user
+    root: /products/{id} (PATCH)
 - Delete a user
+    root: /products/{id} (DELETE)
 """
 
 
+# List all users and permit it to be sorted by ID, email or money
 @app.get("/users")
 async def get_users(token: str = None, sort: str = None):
     if token is not None:
@@ -114,6 +144,7 @@ async def get_users(token: str = None, sort: str = None):
     raise HTTPException(status_code=404, detail="Error: No users found")
 
 
+# Get details from a user by ID
 @app.get("/users/{user_id}")
 async def get_user(user_id: int):
     for user in data["users"]:
@@ -122,6 +153,7 @@ async def get_user(user_id: int):
     raise HTTPException(status_code=404, detail="Error: User not found")
 
 
+# Get every order made by a specific user
 @app.get("/users/{user_id}/orders")
 async def get_user_orders(user_id: int):
     # If the user does not exist
@@ -133,6 +165,7 @@ async def get_user_orders(user_id: int):
     raise HTTPException(status_code=404, detail="Error: This user has no active orders")
 
 
+# Get a specific order made by a specific user
 @app.get("/users/{user_id}/orders/{order_id}")
 async def get_user_order(user_id: int, order_id: int):
     # If the user does not exist
@@ -147,6 +180,7 @@ async def get_user_order(user_id: int, order_id: int):
     raise HTTPException(status_code=404, detail="Error: This order does not belong to a user")
 
 
+# Create an user, add and ID and randomly generate a token
 @app.post("/users")
 async def create_user(new_user: User):
     new_user.id = data["users"][-1]["id"] + 1
@@ -160,7 +194,8 @@ async def create_user(new_user: User):
     return data["users"]
 
 
-@app.put("/users/{user_id}")
+# Update an user
+@app.patch("/users/{user_id}")
 async def update_user(user_id: int, edited_user: EditedUser):
     if any(user["email"] == edited_user.email for user in data["users"]):
         return {"error": "Error: Email already used"}
@@ -173,6 +208,7 @@ async def update_user(user_id: int, edited_user: EditedUser):
     raise HTTPException(status_code=404, detail="Error: User not found")
 
 
+# Delete an user
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int):
     for user in data["users"]:
@@ -186,13 +222,20 @@ async def delete_user(user_id: int):
 """
 All functions that will concern the products:
 - List all products
+    root: /products (GET)
 - Get details from a product (by ID)
+    root: /products/{product_id} (GET)
+    params: token (str)
 - Create a product
+    root: /products (POST)
 - Update a product
+    root: /products/{product_id} (PATCH)
 - Delete a product
+    root: /products/{product_id} (DELETE)
 """
 
 
+# List all products and permit it to be sorted by ID, name, price or quantity
 @app.get("/products")
 async def root(sort: str = None):
     if sort is not None:
@@ -218,6 +261,7 @@ async def root(sort: str = None):
     raise HTTPException(status_code=404, detail="Error: No products found")
 
 
+# Get details from a product thanks to his ID
 @app.get("/products/{products_id}")
 async def get_products_by_id(products_id: int):
     for products in data["products"]:
@@ -227,16 +271,19 @@ async def get_products_by_id(products_id: int):
     raise HTTPException(status_code=404, detail="Product not found")
 
 
+# Create a product, add and ID
 @app.post("/products")
 async def create_product(new_product: Product):
     new_product.id = data["products"][-1]["id"] + 1
     if any(product["name"] == new_product.name for product in data["products"]):
         raise HTTPException(status_code=400, detail="Error: Product already exists")
     data["products"].append(new_product.dict())
+    write_db()
     return data["products"]
 
 
-@app.put("/products/{products_id}")
+# Update a product
+@app.patch("/products/{products_id}")
 async def update_products(products_id: int, edited_products: EditedProduct):
     for products in data["products"]:
         if products["id"] == products_id:
@@ -249,6 +296,7 @@ async def update_products(products_id: int, edited_products: EditedProduct):
     raise HTTPException(status_code=404, detail="Error: Product not found")
 
 
+# Delete a product
 @app.delete("/products/{product_id}")
 async def delete_product(product_id: int):
     for product in data["products"]:
@@ -262,16 +310,26 @@ async def delete_product(product_id: int):
 """
 All functions that will concern the orders:
 - List all orders
+    root: /orders (GET)
+    params: sort (str)
 - Get details from an order (by ID)
+    root: /orders/{order_id} (GET)
 - Get products of an order (by ID)
+    root: /orders/{order_id}/products (GET)
 - Create an order
+    root: /orders (POST)
 - Update an order
+    root: /orders/{order_id} (PATCH)
 - Update products of an order
-- Update only one product of an order
+    root: /orders/{order_id}/products (PATCH)
+- Delete only one product of an order
+    root: /orders/{order_id}/products/{product_id} (DELETE)
 - Delete an order
+    root: /orders/{order_id} (DELETE)
 """
 
 
+# list all orders and permit it to be sorted by ID, user ID, date or total
 @app.get("/orders")
 async def get_order(sort: str = None):
     if sort is not None:
@@ -289,6 +347,7 @@ async def get_order(sort: str = None):
     raise HTTPException(status_code=404, detail="Error: No orders found")
 
 
+# Get details from an order thanks to his ID
 @app.get("/orders/{order_id}")
 async def get_order_by_id(order_id: int):
     for order in data["orders"]:
@@ -297,6 +356,7 @@ async def get_order_by_id(order_id: int):
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
 
+# Get products of an order thanks to his ID
 @app.get("/orders/{order_id}/products")
 async def get_products_in_order(order_id: int):
     if not any(order["id"] == order_id for order in data["orders"]):
@@ -307,48 +367,61 @@ async def get_products_in_order(order_id: int):
     raise HTTPException(status_code=404, detail="Error: Products not found")
 
 
+# Create an order, add and ID
 @app.post("/orders")
 async def create_order(new_order: Order):
     new_order.id = data["orders"][-1]["id"] + 1
-    data["orders"].append(new_order)
+    data["orders"].append(new_order.dict())
     write_db()
     return data["orders"]
 
 
-@app.put("/orders/{order_id}")
+# Update an order thanks to its id
+@app.patch("/orders/{order_id}")
 async def update_order(order_id: int, edited_order: EditedOrder):
     for order in data["orders"]:
         if order["id"] == order_id:
             order["user_id"] = edited_order.user_id or order["user_id"]
             order["total_price"] = edited_order.total_price or order["total_price"]
             order["products"] = edited_order.products or order["products"]
+            write_db()
             return data["orders"]
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
 
+# Update products of an order
 @app.put("/orders/{order_id}/products")
 async def add_product_in_order(order_id: int, product: Product):
     for order in data["orders"]:
         if any(products["id"] == product.id for products in order["products"]):
-            raise HTTPException(status_code=404, detail="Error: Product not found")
+            raise HTTPException(status_code=400, detail="Error: Product already exists")
         if order["id"] == order_id:
-            order["product"] = order["products"].append(product)
+            order["products"].append(product.dict())
+            write_db()
             return data["orders"]
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
 
-@app.put("/orders/{order_id}/products/{product_id}")
+# Update only one product of an order
+@app.delete("/orders/{order_id}/products/{product_id}")
 async def delete_product_in_order(order_id: int, product_id: int):
     for order in data["orders"]:
         if order["id"] == order_id:
-            for product in order["products"]:
-                if product["id"] == product_id:
-                    order["products"].remove(product)
-                    return order["products"]
-        raise HTTPException(status_code=404, detail="Error: Product not found")
+            select_product_and_delete_it(order, product_id)
+            return order["products"]
     raise HTTPException(status_code=404, detail="Error: Order not found")
 
 
+def select_product_and_delete_it(order, product_id):
+    for product in order["products"]:
+        if product["id"] == product_id:
+            order["products"].remove(product)
+            write_db()
+            return order["products"]
+    raise HTTPException(status_code=404, detail="Error: Product not found")
+
+
+# Delete an order
 @app.delete("/orders/{order_id}")
 async def delete_order(order_id: int):
     for order in data["orders"]:
@@ -362,11 +435,17 @@ async def delete_order(order_id: int):
 """
 All functions that will concern the categories:
 - List all categories
+    root: /categories (GET)
 - Get details from a category (by ID)
+    root: /categories/{category_id} (GET)
 - Get products of a category (by ID)
+    root: /categories/{category_id}/products (GET)
 - Create a category
+    root: /categories (POST)
 - Update a category
+    root: /categories/{category_id} (PATCH)
 - Delete a category
+    root: /categories/{category_id} (DELETE)
 """
 
 
@@ -393,7 +472,7 @@ async def get_categories(category_id: int):
     raise HTTPException(status_code=404, detail="Error: Category not found")
 
 
-# Get products by the category
+# Get products by the category ID
 @app.get("/categories/{category_id}/products")
 async def get_products_by_category(category_id: int):
     products = []
@@ -405,7 +484,7 @@ async def get_products_by_category(category_id: int):
 
 # Create a category
 @app.post("/categories")
-async def create_categories(item: CategoriesItem):
+async def create_categories(item: Category):
     item.id = data["categories"][-1]["id"] + 1
     if any(category["title"] == item.title for category in data["categories"]):
         raise HTTPException(status_code=400, detail="Error: Category already exists")
@@ -415,7 +494,7 @@ async def create_categories(item: CategoriesItem):
 
 
 # Update a category
-@app.put("/categories/{category_id}")
+@app.patch("/categories/{category_id}")
 async def update_categories(category_id: int, item: EditCategory):
     if any(category["title"] == item.title for category in data["categories"]):
         raise HTTPException(status_code=400, detail="Error: Category already exists")
