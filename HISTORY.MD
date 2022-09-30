@@ -25,4 +25,5 @@
 
 ## 30/09/2022
 * Updating the docstring 
+* Some bug correction 
 * Merging again Develop with main
