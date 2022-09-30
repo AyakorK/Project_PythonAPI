@@ -394,7 +394,7 @@ async def update_order(order_id: int, edited_order: EditedOrder):
 async def add_product_in_order(order_id: int, product: Product):
     for order in data["orders"]:
         if any(products["id"] == product.id for products in order["products"]):
-            raise HTTPException(status_code=404, detail="Error: Product not found")
+            raise HTTPException(status_code=400, detail="Error: Product already exists")
         if order["id"] == order_id:
             order["products"].append(product.dict())
             write_db()
