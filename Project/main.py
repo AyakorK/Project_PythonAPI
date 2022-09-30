@@ -403,7 +403,7 @@ async def add_product_in_order(order_id: int, product: Product):
 
 
 # Update only one product of an order
-@app.put("/orders/{order_id}/products/{product_id}")
+@app.delete("/orders/{order_id}/products/{product_id}")
 async def delete_product_in_order(order_id: int, product_id: int):
     for order in data["orders"]:
         if order["id"] == order_id:
