@@ -299,10 +299,7 @@ async def create_user(new_user: User):
     new_user.money = 3000
     if any(user["email"] == new_user.email for user in users):
         raise HTTPException(status_code=400, detail="Error: Email already used")
-    session.execute(
-        "INSERT INTO users (id, email, password, token, money, admin) VALUES (:id, :email, :password, :token, :money, :admin)",
-        new_user.dict()
-    )
+    session.add(new_user)
     session.commit()
     return new_user
 
@@ -405,10 +402,7 @@ async def create_product(new_product: Product):
     new_product.id = products.last()["id"] + 1
     if any(product["name"] == new_product.name for product in products):
         raise HTTPException(status_code=400, detail="Error: Product already exists")
-    session.execute(
-        "INSERT INTO products (id, name, price, category, quantity) VALUES (:id, :name, :price, :category, :quantity)",
-        new_product.dict()
-    )
+    session.add(new_product)
     session.commit()
     return new_product
 
@@ -516,10 +510,7 @@ async def create_order(new_order: Order):
     session = Session(engine)
     orders = session.execute("SELECT * FROM orders").fetchall()
     new_order.id = orders.last()["id"] + 1
-    session.execute(
-        "INSERT INTO orders (id, user_id, total_price, products) VALUES (:id, :user_id, :total_price, :products)",
-        new_order.dict()
-    )
+    session.add(new_order)
     session.commit()
     return new_order
 
@@ -668,10 +659,7 @@ async def create_categories(item: Category):
     item.id = categories.last()["id"] + 1
     if any(category["title"] == item.title for category in categories):
         raise HTTPException(status_code=400, detail="Error: Category already exists")
-    session.execute(
-        "INSERT INTO categories (id, title) VALUES (:id, :title)",
-        item.dict()
-    )
+    session.add(item)
     session.commit()
     return item
 
