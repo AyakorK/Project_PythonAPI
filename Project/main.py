@@ -95,7 +95,7 @@ def create_seeds():
     if session.execute("SELECT * FROM users").fetchone() is None:
         session.execute(
             "INSERT INTO users (id, email, password, admin, money) VALUES ('1', 'coucou@coucou.fr', 'Password1', 0, 30000')",
-            "INSERT INTO users (id, email, password, admin, money) VALUES ('2', 'admin@admin.fr')", 'PasswordAdmin', '1', '3000000')",
+            "INSERT INTO users (id, email, password, admin, money) VALUES ('2', 'admin@admin.fr'), 'PasswordAdmin', 1, 3000000)"
         )
         session.commit()
     if session.execute("SELECT * FROM categories").fetchone() is None:
