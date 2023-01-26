@@ -78,7 +78,7 @@ def create_seeds():
             "INSERT INTO orders (id, total_price, user_id) VALUES ('1', '300', 1)",
             "INSERT INTO orders (id, total_price, user_id) VALUES ('2', '300', 1)",
             "INSERT INTO orders (id, total_price, user_id) VALUES ('3', '300', 1)",
-            "INSERT INTO orders (id, total_price, user_id) VALUES ('4', '300', 1)",
+            "INSERT INTO orders (id, total_price, user_id) VALUES ('4', '300', 1)"
         )
         session.commit()
     if session.execute("SELECT * FROM products").fetchone() is None:
@@ -90,7 +90,7 @@ def create_seeds():
             "INSERT INTO products (id, name, category_id, price) VALUES ('5', 'Ice cream', 2, 4)",
             "INSERT INTO products (id, name, category_id, price) VALUES ('6', 'Coke', 3, 2)",
             "INSERT INTO products (id, name, category_id, price) VALUES ('7', 'Burger', 1, 9)",
-            "INSERT INTO products (id, name, category_id, price) VALUES ('8', 'Fries', 1, 3)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('8', 'Fries', 1, 3)"
         )
         session.commit()
     if session.execute("SELECT * FROM users").fetchone() is None:
@@ -103,7 +103,7 @@ def create_seeds():
         session.execute(
             "INSERT INTO categories (id, name) VALUES ('1', 'Salted')",
             "INSERT INTO categories (id, name) VALUES ('2', 'Sweet')",
-            "INSERT INTO categories (id, name) VALUES ('3', 'Drinks')",
+            "INSERT INTO categories (id, name) VALUES ('3', 'Drinks')"
         )
         session.commit()
 
