@@ -73,39 +73,39 @@ def create_seeds():
         """
     )
     session.commit()
-    if session.execute("SELECT * FROM orders").fetchone() is None:
-        session.execute(
-            "INSERT INTO orders (id, total_price, user_id) VALUES ('1', '300', 1)",
-            "INSERT INTO orders (id, total_price, user_id) VALUES ('2', '300', 1)",
-            "INSERT INTO orders (id, total_price, user_id) VALUES ('3', '300', 1)",
-            "INSERT INTO orders (id, total_price, user_id) VALUES ('4', '300', 1)"
-        )
-        session.commit()
-    if session.execute("SELECT * FROM products").fetchone() is None:
-        session.execute(
-            "INSERT INTO products (id, name, category_id, price) VALUES ('1', 'Pizza', 1, 10)",
-            "INSERT INTO products (id, name, category_id, price) VALUES ('2', 'Pasta', 1, 8)",
-            "INSERT INTO products (id, name, category_id, price) VALUES ('3', 'Salad', 1, 5)",
-            "INSERT INTO products (id, name, category_id, price) VALUES ('4', 'Cake', 2, 7)",
-            "INSERT INTO products (id, name, category_id, price) VALUES ('5', 'Ice cream', 2, 4)",
-            "INSERT INTO products (id, name, category_id, price) VALUES ('6', 'Coke', 3, 2)",
-            "INSERT INTO products (id, name, category_id, price) VALUES ('7', 'Burger', 1, 9)",
-            "INSERT INTO products (id, name, category_id, price) VALUES ('8', 'Fries', 1, 3)"
-        )
-        session.commit()
-    if session.execute("SELECT * FROM users").fetchone() is None:
-        session.execute(
-            "INSERT INTO users (id, email, password, admin, money) VALUES ('1', 'coucou@coucou.fr', 'Password1', 0, 30000')",
-            "INSERT INTO users (id, email, password, admin, money) VALUES ('2', 'admin@admin.fr'), 'PasswordAdmin', 1, 3000000)"
-        )
-        session.commit()
-    if session.execute("SELECT * FROM categories").fetchone() is None:
-        session.execute(
-            "INSERT INTO categories (id, name) VALUES ('1', 'Salted')",
-            "INSERT INTO categories (id, name) VALUES ('2', 'Sweet')",
-            "INSERT INTO categories (id, name) VALUES ('3', 'Drinks')"
-        )
-        session.commit()
+    # if session.execute("SELECT * FROM orders").fetchone() is None:
+    #     session.execute(
+    #         "INSERT INTO orders (id, total_price, user_id) VALUES ('1', '300', 1)",
+    #         "INSERT INTO orders (id, total_price, user_id) VALUES ('2', '300', 1)",
+    #         "INSERT INTO orders (id, total_price, user_id) VALUES ('3', '300', 1)",
+    #         "INSERT INTO orders (id, total_price, user_id) VALUES ('4', '300', 1)"
+    #     )
+    #     session.commit()
+    # if session.execute("SELECT * FROM products").fetchone() is None:
+    #     session.execute(
+    #         "INSERT INTO products (id, name, category_id, price) VALUES ('1', 'Pizza', 1, 10)",
+    #         "INSERT INTO products (id, name, category_id, price) VALUES ('2', 'Pasta', 1, 8)",
+    #         "INSERT INTO products (id, name, category_id, price) VALUES ('3', 'Salad', 1, 5)",
+    #         "INSERT INTO products (id, name, category_id, price) VALUES ('4', 'Cake', 2, 7)",
+    #         "INSERT INTO products (id, name, category_id, price) VALUES ('5', 'Ice cream', 2, 4)",
+    #         "INSERT INTO products (id, name, category_id, price) VALUES ('6', 'Coke', 3, 2)",
+    #         "INSERT INTO products (id, name, category_id, price) VALUES ('7', 'Burger', 1, 9)",
+    #         "INSERT INTO products (id, name, category_id, price) VALUES ('8', 'Fries', 1, 3)"
+    #     )
+    #     session.commit()
+    # if session.execute("SELECT * FROM users").fetchone() is None:
+    #     session.execute(
+    #         "INSERT INTO users (id, email, password, admin, money) VALUES ('1', 'coucou@coucou.fr', 'Password1', 0, 30000')",
+    #         "INSERT INTO users (id, email, password, admin, money) VALUES ('2', 'admin@admin.fr'), 'PasswordAdmin', 1, 3000000)"
+    #     )
+    #     session.commit()
+    # if session.execute("SELECT * FROM categories").fetchone() is None:
+    #     session.execute(
+    #         "INSERT INTO categories (id, name) VALUES ('1', 'Salted')",
+    #         "INSERT INTO categories (id, name) VALUES ('2', 'Sweet')",
+    #         "INSERT INTO categories (id, name) VALUES ('3', 'Drinks')"
+    #     )
+    #     session.commit()
 
 
 
