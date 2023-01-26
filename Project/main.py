@@ -219,7 +219,7 @@ All functions that will concern the user:
 @app.get("/users")
 async def get_users(token: str = None, sort: str = None):
     session = Session(engine)
-    users = session.execute("SELECT * FROM users").fetchAll()
+    users = session.execute("SELECT * FROM users").fetchall()
     if token is not None:
         for user in users:
             if user["token"] == token:
@@ -241,11 +241,14 @@ async def get_users(token: str = None, sort: str = None):
     raise HTTPException(status_code=404, detail="Error: No users found")
 
 
+@app.get('/hello')
+async def hello():
+    return {"message": "Hello World"}
 # Get details from a user by ID
 @app.get("/users/{user_id}")
 async def get_user(user_id: int):
     session = Session(engine)
-    users = session.execute("SELECT * FROM users").fetchAll()
+    users = session.execute("SELECT * FROM users").fetchall()
     for user in users:
         if user["id"] == user_id:
             return user
@@ -256,8 +259,8 @@ async def get_user(user_id: int):
 @app.get("/users/{user_id}/orders")
 async def get_user_orders(user_id: int):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
-    users = session.execute("SELECT * FROM users").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
+    users = session.execute("SELECT * FROM users").fetchall()
     # If the user does not exist
     if not any(user["id"] == user_id for user in users):
         raise HTTPException(status_code=404, detail="Error: User not found")
@@ -271,8 +274,8 @@ async def get_user_orders(user_id: int):
 @app.get("/users/{user_id}/orders/{order_id}")
 async def get_user_order(user_id: int, order_id: int):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
-    users = session.execute("SELECT * FROM users").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
+    users = session.execute("SELECT * FROM users").fetchall()
     # If the user does not exist
     if not any(user["id"] == user_id for user in users):
         raise HTTPException(status_code=404, detail="Error: User not found")
@@ -289,7 +292,7 @@ async def get_user_order(user_id: int, order_id: int):
 @app.post("/users")
 async def create_user(new_user: User):
     session = Session(engine)
-    users = session.execute("SELECT * FROM users").fetchAll()
+    users = session.execute("SELECT * FROM users").fetchall()
     new_user.id = users.last()["id"] + 1
     new_user.token = "".join(random.choices(string.ascii_lowercase + string.digits, k=22))
     new_user.admin = 0  # default to 0
@@ -308,7 +311,7 @@ async def create_user(new_user: User):
 @app.patch("/users/{user_id}")
 async def update_user(user_id: int, edited_user: EditedUser):
     session = Session(engine)
-    users = session.execute("SELECT * FROM users").fetchAll()
+    users = session.execute("SELECT * FROM users").fetchall()
     if any(user["email"] == edited_user.email for user in users):
         return {"error": "Error: Email already used"}
     for user in users:
@@ -329,7 +332,7 @@ async def update_user(user_id: int, edited_user: EditedUser):
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int):
     session = Session(engine)
-    users = session.execute("SELECT * FROM users").fetchAll()
+    users = session.execute("SELECT * FROM users").fetchall()
     for user in users:
         if user["id"] == user_id:
             session.execute("DELETE FROM users WHERE id = :id", user)
@@ -358,7 +361,7 @@ All functions that will concern the products:
 @app.get("/products")
 async def root(sort: str = None):
     session = Session(engine)
-    products = session.execute("SELECT * FROM products").fetchAll()
+    products = session.execute("SELECT * FROM products").fetchall()
     if sort is not None:
         if sort == "name":
             return sorted(products, key=lambda k: k["name"].lower())
@@ -386,7 +389,7 @@ async def root(sort: str = None):
 @app.get("/products/{products_id}")
 async def get_products_by_id(products_id: int):
     session = Session(engine)
-    products = session.execute("SELECT * FROM products").fetchAll()
+    products = session.execute("SELECT * FROM products").fetchall()
     for product in products:
         if product["id"] == products_id:
             return product
@@ -398,7 +401,7 @@ async def get_products_by_id(products_id: int):
 @app.post("/products")
 async def create_product(new_product: Product):
     session = Session(engine)
-    products = session.execute("SELECT * FROM products").fetchAll()
+    products = session.execute("SELECT * FROM products").fetchall()
     new_product.id = products.last()["id"] + 1
     if any(product["name"] == new_product.name for product in products):
         raise HTTPException(status_code=400, detail="Error: Product already exists")
@@ -413,7 +416,7 @@ async def create_product(new_product: Product):
 @app.patch("/products/{products_id}")
 async def update_products(products_id: int, edited_products: EditedProduct):
     session = Session(engine)
-    products = session.execute("SELECT * FROM products").fetchAll()
+    products = session.execute("SELECT * FROM products").fetchall()
     for product in products:
         if product["id"] == products_id:
             product["name"] = edited_products.name or products["name"]
@@ -433,7 +436,7 @@ async def update_products(products_id: int, edited_products: EditedProduct):
 @app.delete("/products/{product_id}")
 async def delete_product(product_id: int):
     session = Session(engine)
-    products = session.execute("SELECT * FROM products").fetchAll()
+    products = session.execute("SELECT * FROM products").fetchall()
     for product in products:
         if product["id"] == product_id:
             session.execute("DELETE FROM products WHERE id = :id", product)
@@ -467,7 +470,7 @@ All functions that will concern the orders:
 @app.get("/orders")
 async def get_order(sort: str = None):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
     if sort is not None:
         if sort == "user":
             return sorted(orders, key=lambda k: k["user_id"])
@@ -487,7 +490,7 @@ async def get_order(sort: str = None):
 @app.get("/orders/{order_id}")
 async def get_order_by_id(order_id: int):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
     for order in orders:
         if order["id"] == order_id:
             return order
@@ -498,7 +501,7 @@ async def get_order_by_id(order_id: int):
 @app.get("/orders/{order_id}/products")
 async def get_products_in_order(order_id: int):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
     if not any(order["id"] == order_id for order in orders):
         raise HTTPException(status_code=404, detail="Error: Order not found")
     for order in orders:
@@ -511,7 +514,7 @@ async def get_products_in_order(order_id: int):
 @app.post("/orders")
 async def create_order(new_order: Order):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
     new_order.id = orders.last()["id"] + 1
     session.execute(
         "INSERT INTO orders (id, user_id, total_price, products) VALUES (:id, :user_id, :total_price, :products)",
@@ -526,7 +529,7 @@ async def create_order(new_order: Order):
 @app.patch("/orders/{order_id}")
 async def update_order(order_id: int, edited_order: EditedOrder):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
     for order in orders:
         if order["id"] == order_id:
             order["user_id"] = edited_order.user_id or order["user_id"]
@@ -545,7 +548,7 @@ async def update_order(order_id: int, edited_order: EditedOrder):
 @app.put("/orders/{order_id}/products")
 async def add_product_in_order(order_id: int, product: Product):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
     for order in orders:
         if any(products["id"] == product.id for products in order["products"]):
             raise HTTPException(status_code=400, detail="Error: Product already exists")
@@ -564,7 +567,7 @@ async def add_product_in_order(order_id: int, product: Product):
 @app.delete("/orders/{order_id}/products/{product_id}")
 async def delete_product_in_order(order_id: int, product_id: int):
     session = Session(engine)
-    orders = session.execute("SELECT * FROM orders").fetchAll()
+    orders = session.execute("SELECT * FROM orders").fetchall()
     for order in orders:
         if order["id"] == order_id:
             select_product_and_delete_it(order, product_id)
@@ -622,7 +625,7 @@ All functions that will concern the categories:
 @app.get("/categories")
 async def get_all_categories(sort: str = None):
     session = Session(engine)
-    categories = session.execute("SELECT * FROM categories").fetchAll()
+    categories = session.execute("SELECT * FROM categories").fetchall()
     if sort is not None:
         if sort == "title":
             return sorted(categories, key=lambda k: k["title"])
@@ -638,7 +641,7 @@ async def get_all_categories(sort: str = None):
 @app.get("/categories/{category_id}")
 async def get_categories(category_id: int):
     session = Session(engine)
-    categories = session.execute("SELECT * FROM categories").fetchAll()
+    categories = session.execute("SELECT * FROM categories").fetchall()
     for category in categories:
         if category["id"] == category_id:
             return category
@@ -649,8 +652,8 @@ async def get_categories(category_id: int):
 @app.get("/categories/{category_id}/products")
 async def get_products_by_category(category_id: int):
     session = Session(engine)
-    categories = session.execute("SELECT * FROM categories").fetchAll()
-    products = session.execute("SELECT * FROM products").fetchAll()
+    categories = session.execute("SELECT * FROM categories").fetchall()
+    products = session.execute("SELECT * FROM products").fetchall()
     for category in categories:
         if category["id"] == category_id:
             return [product for product in products if product["category_id"] == category_id]
@@ -661,7 +664,7 @@ async def get_products_by_category(category_id: int):
 @app.post("/categories")
 async def create_categories(item: Category):
     session = Session(engine)
-    categories = session.execute("SELECT * FROM categories").fetchAll()
+    categories = session.execute("SELECT * FROM categories").fetchall()
     item.id = categories.last()["id"] + 1
     if any(category["title"] == item.title for category in categories):
         raise HTTPException(status_code=400, detail="Error: Category already exists")
@@ -677,7 +680,7 @@ async def create_categories(item: Category):
 @app.patch("/categories/{category_id}")
 async def update_categories(category_id: int, item: EditCategory):
     session = Session(engine)
-    categories = session.execute("SELECT * FROM categories").fetchAll()
+    categories = session.execute("SELECT * FROM categories").fetchall()
     if any(category["title"] == item.title for category in categories):
         raise HTTPException(status_code=400, detail="Error: Category already exists")
     for category in categories:
