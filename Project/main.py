@@ -68,7 +68,7 @@ def create_seeds():
             user_id INT NOT NULL,
             total_price INT NOT NULL,
             PRIMARY KEY (id),
-            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (user_id) REFERENCES users(id)
         );
         """
     )
