@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 app = FastAPI()
 
-DATABASE_URL = "jdbc:mariadb://root:@10.10.20.100:3306/LaCroste"
+DATABASE_URL = "mysql+pymysql://root:@10.10.20.100:3306/LaCroste"
 
 engine = create_engine(DATABASE_URL)
 
