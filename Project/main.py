@@ -66,7 +66,7 @@ def create_seeds():
         CREATE TABLE IF NOT EXISTS orders (
             id INT NOT NULL AUTO_INCREMENT,
             user_id INT NOT NULL,
-            products INT NOT NULL,
+            products JSON NOT NULL,
             total_price INT NOT NULL,
             PRIMARY KEY (id),
             FOREIGN KEY (user_id) REFERENCES users(id),
@@ -77,10 +77,10 @@ def create_seeds():
     session.commit()
     if session.execute("SELECT * FROM orders").fetchone() is None:
         session.execute(
-            "INSERT INTO orders (id, products, total_price, user_id) VALUES ('1', '[{\"id\": \"1\", \"name\": \"Pizza\", \"price\": 10}, {\"id\": \"2\", \"name\": \"Pasta\", \"price\": 8}]', '300', 1)",
-            "INSERT INTO orders (id, products, total_price, user_id) VALUES ('2', '[{\"id\": \"3\", \"name\": \"Salad\", \"price\": 5}, {\"id\": \"4\", \"name\": \"Cake\", \"price\": 7}]', '300', 1)",
-            "INSERT INTO orders (id, products, total_price, user_id) VALUES ('3', '[{\"id\": \"5\", \"name\": \"Ice cream\", \"price\": 4}, {\"id\": \"6\", \"name\": \"Coke\", \"price\": 2}]', '300', 1)",
-            "INSERT INTO orders (id, products, total_price, user_id) VALUES ('4', '[{\"id\": \"7\", \"name\": \"Burger\", \"price\": 9}, {\"id\": \"8\", \"name\": \"Fries\", \"price\": 3}]', '300', 1)",
+            "INSERT INTO orders (id, products, total_price, user_id) VALUES ('1', '[{\"id\": \"1\", \"price\": 10}, {\"id\": \"2\", \"price\": 8}]', '300', 1)",
+            "INSERT INTO orders (id, products, total_price, user_id) VALUES ('2', '[{\"id\": \"3\", \"price\": 5}, {\"id\": \"4\", \"price\": 7}]', '300', 1)",
+            "INSERT INTO orders (id, products, total_price, user_id) VALUES ('3', '[{\"id\": \"5\", \"price\": 4}, {\"id\": \"6\", \"price\": 2}]', '300', 1)",
+            "INSERT INTO orders (id, products, total_price, user_id) VALUES ('4', '[{\"id\": \"7\", \"price\": 9}, {\"id\": \"8\", \"price\": 3}]', '300', 1)",
         )
         session.commit()
     if session.execute("SELECT * FROM products").fetchone() is None:
