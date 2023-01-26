@@ -292,15 +292,16 @@ async def get_user_order(user_id: int, order_id: int):
 @app.post("/users")
 async def create_user(new_user: User):
     session = Session(engine)
-    users = session.execute("SELECT * FROM users").fetchall()
-    new_user.id = users.last()["id"] + 1
+    users = session.query(User).all()
+    new_user.id = users[-1].id + 1
     new_user.token = "".join(random.choices(string.ascii_lowercase + string.digits, k=22))
-    new_user.admin = 0  # default to 0
+    new_user.admin = 0
     new_user.money = 3000
-    if any(user["email"] == new_user.email for user in users):
+    if any(user.email == new_user.email for user in users):
         raise HTTPException(status_code=400, detail="Error: Email already used")
     session.add(new_user)
     session.commit()
+    session.refresh(new_user)
     return new_user
 
 
