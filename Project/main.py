@@ -137,7 +137,7 @@ class User(BaseModel):
     id: int = None
     token: str = None
     money: int = None
-    admin: int = None
+    admin: bool = None
 
 
 # Create a class to edit the user
@@ -293,10 +293,14 @@ async def get_user_order(user_id: int, order_id: int):
 async def create_user(new_user: User):
     session = Session(engine)
     users = session.query(User).all()
-    new_user.id = users[-1].id + 1
-    new_user.token = "".join(random.choices(string.ascii_lowercase + string.digits, k=22))
-    new_user.admin = 0
-    new_user.money = 3000
+    new_user = User(
+        email=new_user.email,
+        password=new_user.password,
+        id= users.last().id+1,
+        token="".join(random.choices(string.ascii_letters + string.digits, k=32)),
+        money=3000,
+        admin=0
+    )
     if any(user.email == new_user.email for user in users):
         raise HTTPException(status_code=400, detail="Error: Email already used")
     session.add(new_user)
