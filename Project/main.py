@@ -32,10 +32,12 @@ def create_seeds():
             email VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
             money VARCHAR(255) NOT NULL,
+            admin BOOLEAN NOT NULL,
             PRIMARY KEY (id)
         );
         """
     )
+    session.commit()
     session.execute(
         """
         CREATE TABLE IF NOT EXISTS categories (
@@ -45,12 +47,12 @@ def create_seeds():
         );
         """
     )
+    session.commit()
     session.execute(
         """
         CREATE TABLE IF NOT EXISTS products (
             id INT NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
-            description VARCHAR(255) NOT NULL,
             price FLOAT NOT NULL,
             category_id INT NOT NULL,
             PRIMARY KEY (id),
@@ -58,13 +60,14 @@ def create_seeds():
         );
         """
     )
+    session.commit()
     session.execute(
         """
         CREATE TABLE IF NOT EXISTS orders (
             id INT NOT NULL AUTO_INCREMENT,
             user_id INT NOT NULL,
-            product_id INT NOT NULL,
-            quantity INT NOT NULL,
+            products INT NOT NULL,
+            total_price INT NOT NULL,
             PRIMARY KEY (id),
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (product_id) REFERENCES products(id)
@@ -82,14 +85,14 @@ def create_seeds():
         session.commit()
     if session.execute("SELECT * FROM products").fetchone() is None:
         session.execute(
-            "INSERT INTO products (id, name, category, price) VALUES ('1', 'Pizza', 1, 10)",
-            "INSERT INTO products (id, name, category, price) VALUES ('2', 'Pasta', 1, 8)",
-            "INSERT INTO products (id, name, category, price) VALUES ('3', 'Salad', 1, 5)",
-            "INSERT INTO products (id, name, category, price) VALUES ('4', 'Cake', 2, 7)",
-            "INSERT INTO products (id, name, category, price) VALUES ('5', 'Ice cream', 2, 4)",
-            "INSERT INTO products (id, name, category, price) VALUES ('6', 'Coke', 3, 2)",
-            "INSERT INTO products (id, name, category, price) VALUES ('7', 'Burger', 1, 9)",
-            "INSERT INTO products (id, name, category, price) VALUES ('8', 'Fries', 1, 3)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('1', 'Pizza', 1, 10)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('2', 'Pasta', 1, 8)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('3', 'Salad', 1, 5)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('4', 'Cake', 2, 7)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('5', 'Ice cream', 2, 4)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('6', 'Coke', 3, 2)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('7', 'Burger', 1, 9)",
+            "INSERT INTO products (id, name, category_id, price) VALUES ('8', 'Fries', 1, 3)",
         )
         session.commit()
     if session.execute("SELECT * FROM users").fetchone() is None:
